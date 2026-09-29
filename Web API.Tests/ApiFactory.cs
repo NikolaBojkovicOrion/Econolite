@@ -10,7 +10,7 @@ namespace Econolite_API.Tests;
 
 public sealed class ApiFactory : WebApplicationFactory<Program>
 {
-    private readonly string databaseName = $"EconoliteTrafficTests_{Guid.NewGuid():N}";
+    private readonly string databaseName = $"EconoliteTrafficTests";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

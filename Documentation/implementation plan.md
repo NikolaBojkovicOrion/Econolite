@@ -178,15 +178,27 @@ Testing is part of every feature and must be implemented in the same feature bra
 | --- | --- | --- |
 | Foundation and contracts | Contract mapping, version response, route composition, and shared UI rendering | API health/version requests, CORS behavior, and frontend route navigation against the application shell |
 | Database persistence | Entity invariants, DTO mapping, query filters, and client loading-state transitions | SQL Server Express migrations, seed data, foreign-key behavior, and API queries over HTTP |
+| Authentication and authorization | Token claim mapping, permission checks, protected route behavior, and sign-in form states | Login endpoint, JWT validation, `401`/`403` responses, protected API routes, and authenticated hub access |
+| Error handling and logging | Error mapping, error boundary, retry behavior, and structured-log field creation | Exception middleware, `ProblemDetails`, correlation IDs, and representative failure responses |
 | Intersection monitoring | Freshness classification, filtering, status presentation, and empty/error components | List/detail endpoints, filtering/pagination, and dashboard loading from the API |
 | Traffic events and detector workflow | Event validation, lifecycle rules, idempotency, and event components | Event creation through HTTP, SQL Server uniqueness, invalid payloads, and dashboard event display |
-| Authentication and authorization | Token claim mapping, permission checks, protected route behavior, and sign-in form states | Login endpoint, JWT validation, `401`/`403` responses, protected API routes, and authenticated hub access |
 | Acknowledge, resolve, and audit | State transitions, mutation state, confirmation behavior, and audit presentation | Transactional state-plus-audit changes, idempotent acknowledgement, and authorization over HTTP |
-| Error handling and logging | Error mapping, error boundary, retry behavior, and structured-log field creation | Exception middleware, `ProblemDetails`, correlation IDs, and representative failure responses |
 | SignalR real-time updates | Message deduplication, connection-state UI, reconnect behavior, and listener cleanup | Persist-before-publish behavior, authenticated hub delivery, reconnect refresh, and failure handling |
 | Deployment and production readiness | Configuration parsing, health-state presentation, and startup checks | Container startup, SQL Server readiness, migration deployment, and deployed smoke workflow |
 
 The existing feature sections below describe the concrete tests for each row. Keep the unit and integration test files next to the feature they protect; do not create a later catch-all testing phase.
+
+### Implementation order
+
+1. Application Foundation and Contracts
+2. Database Persistence
+3. Authentication and Authorization
+4. Centralized Error Handling and Structured Logging
+5. Intersection Monitoring Dashboard
+6. Traffic Event and Simulated Detector Workflow
+7. Acknowledge, Resolve, and Audit
+8. Real-Time Updates with SignalR
+9. Deployment and Production Readiness
 
 ### Feature 1: Application Foundation and Contracts
 
@@ -259,86 +271,7 @@ Create the durable operational data model.
 - Test persistence and foreign-key failures with an integration test database.
 - Test the frontend loading, empty, error, and retry states for API calls.
 
-### Feature 3: Intersection Monitoring Dashboard
-
-Provide the first meaningful transportation workflow.
-
-**Backend:**
-
-- Add `GET /api/intersections`.
-- Add `GET /api/intersections/{id}`.
-- Return current status, last detector update, location, and active-event summary.
-- Add server-side filtering and pagination where appropriate.
-
-**Frontend:**
-
-- Create an intersection summary view.
-- Create an intersection table with status, speed, event count, and last update.
-- Add filters for health and status.
-- Display freshness as fresh, delayed, or stale.
-- Add an intersection detail view.
-
-**Tests:**
-
-- Test the intersection list renders status, speed, event count, and freshness.
-- Test filtering by intersection name and health status.
-- Test that an intersection-not-found response renders the correct error state.
-- Test the detail view with representative API data.
-
-**Acceptance criteria:**
-
-- An operator can find an intersection by name or status.
-- The UI distinguishes unavailable data from normal traffic.
-- A detail view shows the intersection’s active events and last update time.
-
-**Tests:**
-
-- Test the list and detail endpoints, including filtering and pagination.
-- Test that detector freshness is calculated consistently at the API boundary.
-- Test that the frontend distinguishes stale data from a healthy intersection.
-
-### Feature 4: Traffic Event and Simulated Detector Workflow
-
-Introduce congestion and incident processing.
-
-**Backend:**
-
-- Add `POST /api/intersections/{id}/events`.
-- Validate event type, severity, timestamp, and intersection ID.
-- Add a simulated detector endpoint or development-only simulator.
-- Store the external detector event ID.
-- Enforce idempotency with a unique source/event ID constraint.
-- Add business rules for active, acknowledged, and resolved states.
-
-**Frontend:**
-
-- Create an active-events panel.
-- Add event severity and status indicators.
-- Add a development control to simulate congestion.
-- Show intersection, event type, severity, detected time, and data freshness.
-- Prevent the UI from presenting stale data as current.
-
-**Tests:**
-
-- Unit-test event validation, status transitions, and idempotency rules.
-- Integration-test creation of a congestion event in SQL Server.
-- Test that submitting the same detector event twice creates one event.
-- Test the simulated-detector control and event severity display.
-- Test invalid payloads and missing intersection IDs in the UI.
-
-**Acceptance criteria:**
-
-- A simulated detector creates a persistent congestion event.
-- Repeating the same detector event does not create a duplicate.
-- The dashboard clearly shows active congestion.
-- Invalid events return useful validation errors.
-
-**Tests:**
-
-- An automated test verifies duplicate detector events are rejected or treated as already processed.
-- An end-to-end test verifies a simulated congestion event appears in the active-events panel.
-
-### Feature 5: Authentication and Authorization
+### Feature 3: Authentication and Authorization
 
 Protect the application and operator actions.
 
@@ -383,7 +316,126 @@ Protect the application and operator actions.
 - Integration-test role and policy authorization for each protected endpoint.
 - Test that the SignalR connection cannot be established with an invalid JWT.
 
-### Feature 6: Acknowledge, Resolve, and Audit
+### Feature 4: Centralized Error Handling and Structured Logging
+
+Make failures diagnosable and consistent.
+
+**Backend:**
+
+- Add global exception handling.
+- Return RFC 9457 `ProblemDetails` responses.
+- Add consistent validation errors.
+- Add structured logs with `TraceId`, `UserId`, `IntersectionId`, and `TrafficEventId`.
+- Add request duration and outcome logging.
+- Avoid logging tokens, passwords, or sensitive data.
+
+**Frontend:**
+
+- Parse `ProblemDetails` responses.
+- Display actionable errors for `400`, `401`, `403`, `404`, `409`, and `503`.
+- Add an application-level error boundary.
+- Keep diagnostic details out of user-facing messages where appropriate.
+- Include a trace ID in support-oriented error messages when available.
+
+**Tests:**
+
+- Test exception, validation, not-found, conflict, unauthorized, and unavailable responses.
+- Test that the frontend maps each important status code to the correct user-facing state.
+- Test that an error does not replace valid previously loaded data with an empty state.
+- Test that logs contain correlation fields without secrets or tokens.
+
+**Acceptance criteria:**
+
+- Unexpected API exceptions have a consistent response shape.
+- Validation and conflict errors are distinguishable.
+- A request can be followed through logs using a correlation ID.
+- The UI does not show an empty dashboard when loading failed.
+
+**Tests:**
+
+- Integration-test the global exception middleware and `ProblemDetails` response shape.
+- Verify a request trace ID appears in both the API response and structured logs.
+
+### Feature 5: Intersection Monitoring Dashboard
+
+Provide the first meaningful transportation workflow.
+
+**Backend:**
+
+- Add `GET /api/intersections`.
+- Add `GET /api/intersections/{id}`.
+- Return current status, last detector update, location, and active-event summary.
+- Add server-side filtering and pagination where appropriate.
+
+**Frontend:**
+
+- Create an intersection summary view.
+- Create an intersection table with status, speed, event count, and last update.
+- Add filters for health and status.
+- Display freshness as fresh, delayed, or stale.
+- Add an intersection detail view.
+
+**Tests:**
+
+- Test the intersection list renders status, speed, event count, and freshness.
+- Test filtering by intersection name and health status.
+- Test that an intersection-not-found response renders the correct error state.
+- Test the detail view with representative API data.
+
+**Acceptance criteria:**
+
+- An operator can find an intersection by name or status.
+- The UI distinguishes unavailable data from normal traffic.
+- A detail view shows the intersection’s active events and last update time.
+
+**Tests:**
+
+- Test the list and detail endpoints, including filtering and pagination.
+- Test that detector freshness is calculated consistently at the API boundary.
+- Test that the frontend distinguishes stale data from a healthy intersection.
+
+### Feature 6: Traffic Event and Simulated Detector Workflow
+
+Introduce congestion and incident processing.
+
+**Backend:**
+
+- Add `POST /api/intersections/{id}/events`.
+- Validate event type, severity, timestamp, and intersection ID.
+- Add a simulated detector endpoint or development-only simulator.
+- Store the external detector event ID.
+- Enforce idempotency with a unique source/event ID constraint.
+- Add business rules for active, acknowledged, and resolved states.
+
+**Frontend:**
+
+- Create an active-events panel.
+- Add event severity and status indicators.
+- Add a development control to simulate congestion.
+- Show intersection, event type, severity, detected time, and data freshness.
+- Prevent the UI from presenting stale data as current.
+
+**Tests:**
+
+- Unit-test event validation, status transitions, and idempotency rules.
+- Integration-test creation of a congestion event in SQL Server.
+- Test that submitting the same detector event twice creates one event.
+- Test the simulated-detector control and event severity display.
+- Test invalid payloads and missing intersection IDs in the UI.
+
+**Acceptance criteria:**
+
+- A simulated detector creates a persistent congestion event.
+- Repeating the same detector event does not create a duplicate.
+- The dashboard clearly shows active congestion.
+- Invalid events return useful validation errors.
+
+**Tests:**
+
+- An automated test verifies duplicate detector events are rejected or treated as already processed.
+- An end-to-end test verifies a simulated congestion event appears in the active-events panel.
+
+### Feature 7: Acknowledge, Resolve, and Audit
 
 Complete the operator workflow and make changes accountable.
 
@@ -425,46 +477,6 @@ Complete the operator workflow and make changes accountable.
 
 - An end-to-end test acknowledges an event and verifies the audit record.
 - An authorization test verifies that a restricted resolve action returns `403` and leaves the event unchanged.
-
-### Feature 7: Centralized Error Handling and Structured Logging
-
-Make failures diagnosable and consistent.
-
-**Backend:**
-
-- Add global exception handling.
-- Return RFC 9457 `ProblemDetails` responses.
-- Add consistent validation errors.
-- Add structured logs with `TraceId`, `UserId`, `IntersectionId`, and `TrafficEventId`.
-- Add request duration and outcome logging.
-- Avoid logging tokens, passwords, or sensitive data.
-
-**Frontend:**
-
-- Parse `ProblemDetails` responses.
-- Display actionable errors for `400`, `401`, `403`, `404`, `409`, and `503`.
-- Add an application-level error boundary.
-- Keep diagnostic details out of user-facing messages where appropriate.
-- Include a trace ID in support-oriented error messages when available.
-
-**Tests:**
-
-- Test exception, validation, not-found, conflict, unauthorized, and unavailable responses.
-- Test that the frontend maps each important status code to the correct user-facing state.
-- Test that an error does not replace valid previously loaded data with an empty state.
-- Test that logs contain correlation fields without secrets or tokens.
-
-**Acceptance criteria:**
-
-- Unexpected API exceptions have a consistent response shape.
-- Validation and conflict errors are distinguishable.
-- A request can be followed through logs using a correlation ID.
-- The UI does not show an empty dashboard when loading failed.
-
-**Tests:**
-
-- Integration-test the global exception middleware and `ProblemDetails` response shape.
-- Verify a request trace ID appears in both the API response and structured logs.
 
 ### Feature 8: Real-Time Updates with SignalR
 

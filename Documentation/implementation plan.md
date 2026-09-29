@@ -746,3 +746,66 @@ Network retries and at-least-once message delivery are normal. Stable external e
 ## 10. Final Outcome
 
 The finished project should demonstrate a complete, explainable vertical slice rather than a large collection of disconnected screens. A smaller workflow with persistence, security, real-time behavior, tests, observability, and deployment is stronger evidence of senior engineering judgment than an unnecessarily broad feature list.
+
+## 11. Implemented Features
+
+The following features have been implemented in the current workspace.
+
+### Feature 1: Application Foundation and Contracts
+
+**Status:** Implemented
+
+- Added the React application shell and feature-based frontend structure.
+- Added TypeScript migration for the React client.
+- Added routes for overview, intersections, events, audit, and login.
+- Added API health and version endpoints.
+- Added configurable CORS for the client application.
+- Added backend module boundaries for Intersections, Traffic Events, Identity, and Audit.
+- Added initial API contracts and environment configuration.
+
+### Feature 2: Database Persistence
+
+**Status:** Implemented
+
+- Added EF Core with Microsoft SQL Server support.
+- Configured SQL Server Express for local development.
+- Added `Intersection`, `TrafficEvent`, `ApplicationUser`, and `AuditEntry` persistence models.
+- Added SQL Server configurations, indexes, foreign keys, and unique detector-event constraints.
+- Added and applied the initial SQL Server migration.
+- Added seeded intersections and active traffic events.
+- Added `GET /api/intersections` and `GET /api/events`.
+- Connected the React dashboard to persisted API data.
+- Added loading, empty, error, and retry states.
+
+### Feature 3: Authentication and Authorization
+
+**Status:** Implemented
+
+- Added JWT bearer authentication.
+- Added `/api/auth/login`.
+- Added development operator seeding.
+- Added `Operator`, `Supervisor`, and `Admin` role support.
+- Added authorization policies for traffic access and event operations.
+- Protected intersection and traffic-event endpoints.
+- Added typed React authentication context and session storage.
+- Added login, logout, protected routes, and bearer-token API requests.
+- Added frontend login tests and backend JWT integration tests.
+
+### Validation Completed
+
+- Frontend unit and integration tests pass.
+- Backend unit and SQL Server Express integration tests pass.
+- TypeScript type checking passes.
+- Frontend lint passes.
+- Frontend production build passes.
+- Backend build passes.
+- Editor diagnostics report no errors.
+
+### Remaining Features
+
+- **Feature 4:** Centralized Error Handling and Structured Logging
+- **Feature 5:** Intersection Monitoring Dashboard enhancements
+- **Feature 6:** Traffic Event and Simulated Detector Workflow
+- **Feature 7:** Acknowledge, Resolve, and Audit
+- **Feature 8:** Real-Time Updates with SignalR
+- **Feature 9:** Deployment and Production Readiness

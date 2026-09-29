@@ -8,10 +8,21 @@ using Microsoft.IdentityModel.Tokens;
 using Econolite_API.Modules.Identity.Application.Interfaces;
 using Econolite_API.Modules.Identity.Domain.Entities;
 using Econolite_API.Modules.Identity.Infrastructure.Jwt;
+using Econolite_API.Infrastructure.ErrorHandling;
+using Econolite_API.Infrastructure.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
+        context.ProblemDetails.Instance = context.HttpContext.Request.Path;
+    };
+});
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
@@ -74,6 +85,9 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     await DevelopmentUserSeeder.SeedAsync(scope.ServiceProvider);
 }
+
+app.UseExceptionHandler();
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

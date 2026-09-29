@@ -1,23 +1,20 @@
 import { useEffect, useReducer } from 'react'
 import { getIntersections } from '../intersections/intersectionApi'
 import { getActiveTrafficEvents } from '../trafficEvents/trafficEventApi'
-import type { DashboardStatus, Intersection, TrafficEvent } from '../../types/traffic'
-
-export interface DashboardState {
-  status: DashboardStatus
-  intersections: Intersection[]
-  events: TrafficEvent[]
-}
+import type { DashboardState } from './dashboardTypes'
+import type { Intersection, TrafficEvent } from '../../types/traffic'
 
 type DashboardAction =
   | { type: 'loading' }
   | { type: 'loaded'; intersections: Intersection[]; events: TrafficEvent[] }
-  | { type: 'failed' }
+  | { type: 'failed'; message: string; traceId: string | null }
 
 const initialDashboardState: DashboardState = {
   status: 'loading',
   intersections: [],
   events: [],
+  errorMessage: null,
+  traceId: null,
 }
 
 export function dashboardReducer(state: DashboardState, action: DashboardAction): DashboardState {
@@ -25,9 +22,9 @@ export function dashboardReducer(state: DashboardState, action: DashboardAction)
     case 'loading':
       return { ...state, status: 'loading' }
     case 'loaded':
-      return { status: 'ready', intersections: action.intersections, events: action.events }
+      return { status: 'ready', intersections: action.intersections, events: action.events, errorMessage: null, traceId: null }
     case 'failed':
-      return { ...state, status: 'error' }
+      return { ...state, status: 'error', errorMessage: action.message, traceId: action.traceId }
     default:
       return state
   }
@@ -46,7 +43,12 @@ export function useDashboardData(): { dashboard: DashboardState; retry: () => vo
       dispatch({ type: 'loaded', intersections, events })
     } catch (error) {
       if (!(error instanceof DOMException && error.name === 'AbortError')) {
-        dispatch({ type: 'failed' })
+        const typedError = error as { message?: string; traceId?: string }
+        dispatch({
+          type: 'failed',
+          message: typedError.message ?? 'Unable to load current data.',
+          traceId: typedError.traceId ?? null,
+        })
       }
     }
   }

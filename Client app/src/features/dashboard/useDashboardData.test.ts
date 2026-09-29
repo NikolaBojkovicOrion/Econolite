@@ -1,10 +1,12 @@
-import { describe, expect, it } from 'vitest'
-import { dashboardReducer, type DashboardState } from './useDashboardData'
+import { dashboardReducer } from './useDashboardData'
+import type { DashboardState } from './dashboardTypes'
 
 const initialState: DashboardState = {
   status: 'loading',
   intersections: [],
   events: [],
+  errorMessage: null,
+  traceId: null,
 }
 
 describe('dashboardReducer', () => {
@@ -40,7 +42,11 @@ describe('dashboardReducer', () => {
       }],
     }
 
-    const nextState = dashboardReducer(loadedState, { type: 'failed' })
+    const nextState = dashboardReducer(loadedState, {
+      type: 'failed',
+      message: 'API unavailable',
+      traceId: 'trace-123',
+    })
 
     expect(nextState.status).toBe('error')
     expect(nextState.intersections).toHaveLength(1)

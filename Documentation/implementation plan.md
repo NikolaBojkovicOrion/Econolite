@@ -791,6 +791,19 @@ The following features have been implemented in the current workspace.
 - Added login, logout, protected routes, and bearer-token API requests.
 - Added frontend login tests and backend JWT integration tests.
 
+### Feature 4: Centralized Error Handling and Structured Logging
+
+**Status:** Implemented
+
+- Added global exception handling with RFC 9457 `ProblemDetails` responses.
+- Added validation responses for malformed login requests.
+- Added request logging middleware with method, path, status, duration, trace ID, and correlation ID.
+- Added `X-Correlation-ID` request and response support.
+- Added typed frontend `ApiError` parsing for status, detail, and trace ID.
+- Updated dashboard error states to show actionable API details and trace IDs.
+- Added backend integration tests for validation, unauthorized responses, and correlation IDs.
+- Added frontend tests for API error parsing and dashboard failure presentation.
+
 ### Validation Completed
 
 - Frontend unit and integration tests pass.
@@ -803,7 +816,6 @@ The following features have been implemented in the current workspace.
 
 ### Remaining Features
 
-- **Feature 4:** Centralized Error Handling and Structured Logging
 - **Feature 5:** Intersection Monitoring Dashboard enhancements
 - **Feature 6:** Traffic Event and Simulated Detector Workflow
 - **Feature 7:** Acknowledge, Resolve, and Audit

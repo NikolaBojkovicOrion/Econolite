@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { vi } from 'vitest'
 import { getIntersections } from '../../intersections/intersectionApi'
 import { getActiveTrafficEvents } from '../../trafficEvents/trafficEventApi'
 import { DashboardPage } from './DashboardPage'
@@ -16,11 +16,9 @@ const mockedGetIntersections = vi.mocked(getIntersections)
 const mockedGetActiveTrafficEvents = vi.mocked(getActiveTrafficEvents)
 
 describe('DashboardPage', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('loads and displays API data', async () => {
+    cleanup()
+    vi.clearAllMocks()
     mockedGetIntersections.mockResolvedValue([{
       id: 101,
       name: 'Harbor Boulevard / Katella Avenue',
@@ -40,20 +38,22 @@ describe('DashboardPage', () => {
 
     render(<DashboardPage />)
 
-    expect(screen.getByText('Loading current intersection data...')).toBeInTheDocument()
-    await waitFor(() => expect(screen.getByText('Harbor Boulevard / Katella Avenue')).toBeInTheDocument())
+    expect(screen.getByText('Loading current intersection data...')).toBeTruthy()
+    await waitFor(() => expect(screen.getByText('Harbor Boulevard / Katella Avenue')).toBeTruthy())
 
-    expect(screen.getByText('Congestion at #101')).toBeInTheDocument()
-    expect(screen.getByText('Intersections monitored')).toBeInTheDocument()
+    expect(screen.getByText('Congestion at #101')).toBeTruthy()
+    expect(screen.getByText('Intersections monitored')).toBeTruthy()
   })
 
   it('shows a recoverable error when the API fails', async () => {
+    cleanup()
+    vi.clearAllMocks()
     mockedGetIntersections.mockRejectedValue(new Error('API unavailable'))
     mockedGetActiveTrafficEvents.mockRejectedValue(new Error('API unavailable'))
 
     render(<DashboardPage />)
 
-    await waitFor(() => expect(screen.getByText('Unable to load current data.')).toBeInTheDocument())
-    expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByText('API unavailable')).toBeTruthy())
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeTruthy()
   })
 })

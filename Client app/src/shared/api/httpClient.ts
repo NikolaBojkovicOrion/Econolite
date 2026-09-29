@@ -1,4 +1,5 @@
 import { getAccessToken } from '../../features/auth/authStorage'
+import { ApiError, type ProblemDetailsPayload } from './ApiError'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5102'
 
@@ -8,9 +9,7 @@ export async function getJson<T>(path: string, signal?: AbortSignal): Promise<T>
     headers: getAuthHeaders(),
   })
 
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`)
-  }
+  await throwForProblemResponse(response)
 
   return response.json() as Promise<T>
 }
@@ -25,9 +24,7 @@ export async function postJson<TRequest, TResponse>(path: string, body: TRequest
     body: JSON.stringify(body),
   })
 
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`)
-  }
+  await throwForProblemResponse(response)
 
   return response.json() as Promise<TResponse>
 }
@@ -35,4 +32,13 @@ export async function postJson<TRequest, TResponse>(path: string, body: TRequest
 function getAuthHeaders(): HeadersInit {
   const token = getAccessToken()
   return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+async function throwForProblemResponse(response: Response): Promise<void> {
+  if (response.ok) {
+    return
+  }
+
+  const problem = await response.json().catch((): ProblemDetailsPayload => ({}))
+  throw new ApiError(response.status, problem as ProblemDetailsPayload)
 }

@@ -38,7 +38,8 @@ export function DashboardPage() {
       )}
       {dashboard.status === 'error' && (
         <div className="placeholder-note">
-          Unable to load current data.{' '}
+          {dashboard.errorMessage ?? 'Unable to load current data.'}{' '}
+          {dashboard.traceId && <small>Trace ID: {dashboard.traceId}</small>}{' '}
           <button type="button" onClick={retry}>Retry</button>
         </div>
       )}

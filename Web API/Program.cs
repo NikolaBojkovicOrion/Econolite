@@ -52,3 +52,7 @@ app.MapGet("/version", (IHostEnvironment environment) => Results.Ok(new
 }));
 
 app.Run();
+
+public partial class Program
+{
+}

@@ -20,7 +20,7 @@ const initialDashboardState: DashboardState = {
   events: [],
 }
 
-function dashboardReducer(state: DashboardState, action: DashboardAction): DashboardState {
+export function dashboardReducer(state: DashboardState, action: DashboardAction): DashboardState {
   switch (action.type) {
     case 'loading':
       return { ...state, status: 'loading' }

@@ -170,6 +170,24 @@ For a small project, these can initially be projects inside one solution rather 
 
 Implement features in this order because each later feature depends on contracts or behavior from earlier features.
 
+## 3.1 Mandatory Testing Rule
+
+Testing is part of every feature and must be implemented in the same feature branch or work item. No feature is complete, and the next feature must not start, until both its unit tests and integration tests pass.
+
+| Feature | Required unit tests | Required integration tests |
+| --- | --- | --- |
+| Foundation and contracts | Contract mapping, version response, route composition, and shared UI rendering | API health/version requests, CORS behavior, and frontend route navigation against the application shell |
+| Database persistence | Entity invariants, DTO mapping, query filters, and client loading-state transitions | SQL Server Express migrations, seed data, foreign-key behavior, and API queries over HTTP |
+| Intersection monitoring | Freshness classification, filtering, status presentation, and empty/error components | List/detail endpoints, filtering/pagination, and dashboard loading from the API |
+| Traffic events and detector workflow | Event validation, lifecycle rules, idempotency, and event components | Event creation through HTTP, SQL Server uniqueness, invalid payloads, and dashboard event display |
+| Authentication and authorization | Token claim mapping, permission checks, protected route behavior, and sign-in form states | Login endpoint, JWT validation, `401`/`403` responses, protected API routes, and authenticated hub access |
+| Acknowledge, resolve, and audit | State transitions, mutation state, confirmation behavior, and audit presentation | Transactional state-plus-audit changes, idempotent acknowledgement, and authorization over HTTP |
+| Error handling and logging | Error mapping, error boundary, retry behavior, and structured-log field creation | Exception middleware, `ProblemDetails`, correlation IDs, and representative failure responses |
+| SignalR real-time updates | Message deduplication, connection-state UI, reconnect behavior, and listener cleanup | Persist-before-publish behavior, authenticated hub delivery, reconnect refresh, and failure handling |
+| Deployment and production readiness | Configuration parsing, health-state presentation, and startup checks | Container startup, SQL Server readiness, migration deployment, and deployed smoke workflow |
+
+The existing feature sections below describe the concrete tests for each row. Keep the unit and integration test files next to the feature they protect; do not create a later catch-all testing phase.
+
 ### Feature 1: Application Foundation and Contracts
 
 Create the shared conventions and development foundation before implementing business behavior.
@@ -642,6 +660,9 @@ A feature is complete when:
 - Backend validation and authorization are implemented.
 - Frontend loading, success, empty, and error states are handled.
 - Persistence behavior is tested where applicable.
+- Every feature has passing unit tests for its domain/application/UI behavior.
+- Every feature has passing integration tests covering its API, database, browser, or infrastructure boundary.
+- Tests use Microsoft SQL Server Express or the configured SQL Server environment for database integration; do not introduce SQLite or an alternate database provider.
 - Logs contain useful correlation data.
 - Accessibility has been considered.
 - The feature works after a page refresh.

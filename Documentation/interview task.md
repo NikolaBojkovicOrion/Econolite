@@ -91,7 +91,7 @@ Use DTOs rather than exposing EF Core entities directly. Validate requests at th
 ## Recommended Implementation Order
 
 1. Replace the weather endpoint with `Intersection` and `TrafficEvent` entities.
-2. Add EF Core with SQLite locally and migrations.
+2. Add EF Core with SQL Server Express locally and migrations.
 3. Add service-layer business rules and DTOs.
 4. Add global `ProblemDetails` error handling.
 5. Add structured logs and correlation IDs.
@@ -109,7 +109,7 @@ Start with a modular monolith. Extract services only when independent scaling, o
 
 Traffic events, intersections, users, permissions, and audit records have clear relationships and consistency requirements. A relational database provides foreign keys, transactions, unique constraints, indexes, and reliable queries.
 
-I would use SQLite for local development and PostgreSQL in production. A time-series or event-streaming database could be added later for high-volume telemetry, but it would not replace the primary operational database initially.
+I would use the locally installed SQL Server Express instance for development and SQL Server or Azure SQL in production. A time-series or event-streaming database could be added later for high-volume telemetry, but it would not replace the primary operational database initially.
 
 ### Which operations require a transaction?
 

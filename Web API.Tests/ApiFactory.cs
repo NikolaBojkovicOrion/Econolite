@@ -1,5 +1,7 @@
 using Econolite_API.Infrastructure.Persistence;
+using Econolite_API.Modules.Identity.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -15,6 +17,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+        builder.UseSetting("Jwt:SigningKey", "testing-only-signing-key-with-enough-length-2026");
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<DbContextOptions<EconoliteDbContext>>();
@@ -29,6 +32,15 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
             var dbContext = scope.ServiceProvider.GetRequiredService<EconoliteDbContext>();
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
+
+            var user = new ApplicationUser(
+                Guid.Parse("5cf6ccf6-71bf-4e74-a1cf-5ec7c2f9e301"),
+                "operator@econolite.local",
+                string.Empty,
+                "Operator");
+            user.SetPasswordHash(new PasswordHasher<ApplicationUser>().HashPassword(user, "Operator123!"));
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
         });
     }
 }

@@ -1,5 +1,13 @@
+using System.Security.Claims;
+using System.Text;
 using Econolite_API.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Econolite_API.Modules.Identity.Application.Interfaces;
+using Econolite_API.Modules.Identity.Domain.Entities;
+using Econolite_API.Modules.Identity.Infrastructure.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +17,38 @@ builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 builder.Services.AddDbContext<EconoliteDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddSingleton<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
+
+var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
+            ValidateIssuer = true,
+            ValidIssuer = jwtOptions.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtOptions.Audience,
+            ValidateLifetime = true,
+            RoleClaimType = ClaimTypes.Role,
+            NameClaimType = ClaimTypes.Name,
+            ClockSkew = TimeSpan.FromSeconds(30),
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthorizationPolicies.CanViewTraffic, policy =>
+        policy.RequireRole("Operator", "Supervisor", "Admin"));
+    options.AddPolicy(AuthorizationPolicies.CanAcknowledgeTrafficEvent, policy =>
+        policy.RequireRole("Operator", "Supervisor", "Admin"));
+    options.AddPolicy(AuthorizationPolicies.CanResolveCriticalEvent, policy =>
+        policy.RequireRole("Supervisor", "Admin"));
+});
 
 var allowedOrigins = builder.Configuration
     .GetSection("Cors:AllowedOrigins")
@@ -29,6 +69,12 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    await DevelopmentUserSeeder.SeedAsync(scope.ServiceProvider);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -40,6 +86,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("ClientApp");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

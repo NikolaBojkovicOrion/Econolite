@@ -1,11 +1,14 @@
 using Econolite_API.Infrastructure.Persistence;
 using Econolite_API.Modules.TrafficEvents.Application.Contracts;
+using Econolite_API.Modules.Identity.Infrastructure.Jwt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Econolite_API.Controllers;
 
 [ApiController]
+[Authorize(Policy = AuthorizationPolicies.CanViewTraffic)]
 [Route("api/events")]
 public sealed class TrafficEventsController(EconoliteDbContext dbContext) : ControllerBase
 {

@@ -1,6 +1,9 @@
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../../features/auth'
 
 export function TopBar() {
+  const { user, logout } = useAuth()
+
   return (
     <header className="topbar">
       <NavLink className="brand" to="/">
@@ -13,6 +16,12 @@ export function TopBar() {
         <NavLink to="/events">Events</NavLink>
         <NavLink to="/audit">Audit</NavLink>
       </nav>
+      {user && (
+        <div className="session-controls">
+          <span>{user.email}</span>
+          <button type="button" onClick={logout}>Sign out</button>
+        </div>
+      )}
     </header>
   )
 }

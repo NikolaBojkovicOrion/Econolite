@@ -10,6 +10,7 @@ using Econolite_API.Modules.Identity.Domain.Entities;
 using Econolite_API.Modules.Identity.Infrastructure.Jwt;
 using Econolite_API.Infrastructure.ErrorHandling;
 using Econolite_API.Infrastructure.Logging;
+using Econolite_API.Modules.Intersections.Application.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,12 @@ builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 builder.Services.AddDbContext<EconoliteDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddOptions<IntersectionMonitoringOptions>()
+    .Bind(builder.Configuration.GetSection(IntersectionMonitoringOptions.SectionName))
+    .Validate(options => options.FreshThresholdSeconds > 0 &&
+                         options.DelayedThresholdSeconds > options.FreshThresholdSeconds,
+        "Detector freshness thresholds must be positive and delayed must exceed fresh.")
+    .ValidateOnStart();
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddSingleton<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();

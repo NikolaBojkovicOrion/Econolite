@@ -11,6 +11,33 @@ export interface Intersection {
   lastDetectorUpdate: string | null
 }
 
+export type DetectorFreshness = 'Fresh' | 'Delayed' | 'Stale'
+
+export interface IntersectionSummary extends Intersection {
+  speedMph: number | null
+  freshness: DetectorFreshness
+  activeEventCount: number
+}
+
+export interface IntersectionSummaryCounts {
+  totalCount: number
+  healthyCount: number
+  delayedOrStaleCount: number
+}
+
+export interface IntersectionPageResponse {
+  items: IntersectionSummary[]
+  pageNumber: number
+  pageSize: number
+  totalCount: number
+  summary: IntersectionSummaryCounts
+}
+
+export interface IntersectionDetailResponse {
+  intersection: IntersectionSummary
+  activeEvents: TrafficEvent[]
+}
+
 export interface TrafficEvent {
   id: string
   intersectionId: number

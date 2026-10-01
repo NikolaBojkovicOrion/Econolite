@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Intersection detail screen mockup</title>
+  <desc id="desc">A light traffic operations detail page for one intersection, separating health from delayed detector freshness and showing speed, location, and an active-event summary.</desc>
+  <rect width="1200" height="900" fill="#f1f5f2"/>
+  <rect width="1200" height="76" fill="#fbfcfa"/>
+  <path d="M0 75.5H1200" stroke="#d7e1dd"/>
+  <text x="56" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2" fill="#16817d">ECONOLITE</text>
+  <text x="56" y="53" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="650" fill="#18303d">Mobility control room</text>
+  <text x="389" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#60717b">Overview</text>
+  <rect x="482" y="18" width="126" height="40" rx="20" fill="#f9e7e0"/>
+  <text x="507" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#cf513b">Intersections</text>
+  <text x="633" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#60717b">Events</text>
+  <text x="719" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#60717b">Audit</text>
+  <text x="934" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#536671">operator@econolite.local</text>
+  <rect x="1074" y="17" width="86" height="40" rx="20" fill="#fbfcfa" stroke="#d7e1dd"/>
+  <text x="1091" y="42" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#536671">Sign out</text>
+
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <path d="M60 119l-6 6 6 6" fill="none" stroke="#16817d" stroke-width="2"/>
+    <text x="70" y="130" font-size="14" font-weight="600" fill="#16817d">Intersections</text>
+    <text x="58" y="178" font-size="13" font-weight="700" letter-spacing="1.4" fill="#d94f39">INTERSECTION DETAILS</text>
+    <text x="58" y="220" font-size="31" font-weight="700" fill="#142d3a">Harbor Boulevard / Katella Avenue</text>
+    <text x="60" y="249" font-size="14" fill="#75848b">Intersection INT-0102</text>
+    <rect x="873" y="192" width="91" height="31" rx="16" fill="#e0f1e9"/><circle cx="891" cy="207" r="4" fill="#23816a"/><text x="903" y="212" font-size="13" font-weight="650" fill="#19735d">Healthy</text>
+    <rect x="977" y="192" width="102" height="31" rx="16" fill="#faeadb"/><circle cx="995" cy="207" r="4" fill="#bb702f"/><text x="1007" y="212" font-size="13" font-weight="650" fill="#aa5c25">Delayed</text>
+
+    <rect x="58" y="282" width="344" height="105" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="82" y="313" font-size="13" font-weight="650" fill="#16817d">LATEST SPEED</text>
+    <text x="82" y="356" font-size="29" font-weight="700" fill="#142d3a">38 mph</text>
+    <text x="82" y="376" font-size="12" fill="#71818a">Current detector reading</text>
+    <rect x="428" y="282" width="344" height="105" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="452" y="313" font-size="13" font-weight="650" fill="#16817d">ACTIVE EVENTS</text>
+    <text x="452" y="356" font-size="29" font-weight="700" fill="#142d3a">1</text>
+    <text x="452" y="376" font-size="12" fill="#71818a">Requires operator review</text>
+    <rect x="798" y="282" width="344" height="105" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="822" y="313" font-size="13" font-weight="650" fill="#16817d">LAST DETECTOR UPDATE</text>
+    <text x="822" y="352" font-size="23" font-weight="700" fill="#142d3a">8 minutes ago</text>
+    <text x="822" y="376" font-size="12" fill="#aa5c25">Delayed data; verify before acting</text>
+
+    <rect x="58" y="411" width="500" height="188" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="84" y="448" font-size="13" font-weight="700" fill="#16817d">LOCATION</text>
+    <text x="84" y="479" font-size="19" font-weight="650" fill="#18303d">Harbor Boulevard &amp; Katella Avenue</text>
+    <path d="M84 497H532" stroke="#dce4e0"/>
+    <text x="84" y="527" font-size="13" fill="#71818a">Latitude</text><text x="214" y="527" font-size="14" fill="#435965">33.8037</text>
+    <text x="84" y="557" font-size="13" fill="#71818a">Longitude</text><text x="214" y="557" font-size="14" fill="#435965">-117.9180</text>
+    <text x="84" y="583" font-size="12" fill="#87949a">Location values shown as returned by the API</text>
+
+    <rect x="582" y="411" width="560" height="188" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="608" y="448" font-size="13" font-weight="700" fill="#16817d">DETECTOR FRESHNESS</text>
+    <text x="608" y="481" font-size="18" font-weight="650" fill="#18303d">Latest reading is delayed</text>
+    <text x="608" y="510" font-size="14" fill="#63737b">Health remains Healthy; freshness describes data age.</text>
+    <rect x="608" y="534" width="485" height="42" rx="6" fill="#fff7ec"/>
+    <circle cx="630" cy="555" r="5" fill="#bb702f"/>
+    <text x="645" y="560" font-size="13" font-weight="600" fill="#80531f">Last update: 8 minutes ago</text>
+
+    <rect x="58" y="623" width="1084" height="218" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="84" y="662" font-size="13" font-weight="700" fill="#16817d">ACTIVE CONDITIONS</text>
+    <text x="84" y="690" font-size="19" font-weight="650" fill="#18303d">Events at this intersection</text>
+    <path d="M84 708H1116" stroke="#dce4e0"/>
+    <text x="84" y="738" font-size="12" font-weight="700" fill="#71818a">EVENT</text>
+    <text x="572" y="738" font-size="12" font-weight="700" fill="#71818a">SEVERITY</text>
+    <text x="744" y="738" font-size="12" font-weight="700" fill="#71818a">STATUS</text>
+    <text x="914" y="738" font-size="12" font-weight="700" fill="#71818a">DETECTED</text>
+    <path d="M84 751H1116" stroke="#e0e7e3"/>
+    <text x="84" y="785" font-size="15" font-weight="600" fill="#254252">SlowTraffic</text>
+    <text x="84" y="805" font-size="12" fill="#87949a">Event #2048</text>
+    <rect x="568" y="766" width="82" height="27" rx="14" fill="#f9e5df"/><text x="585" y="784" font-size="12" font-weight="650" fill="#c74934">Medium</text>
+    <rect x="740" y="766" width="86" height="27" rx="14" fill="#faeadb"/><text x="757" y="784" font-size="12" font-weight="650" fill="#aa5c25">Active</text>
+    <text x="914" y="784" font-size="14" fill="#536671">Today, 10:41 AM</text>
+  </g>
+</svg>

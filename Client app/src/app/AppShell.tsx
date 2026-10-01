@@ -3,6 +3,8 @@ import { TopBar } from './components/TopBar'
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage'
 import { RequireAuth } from '../features/auth/components/RequireAuth'
 import { LoginPage } from '../features/auth/pages/LoginPage'
+import { IntersectionsPage } from '../features/intersections/pages/IntersectionsPage'
+import { IntersectionDetailPage } from '../features/intersections/pages/IntersectionDetailPage'
 import { FeaturePage } from '../shared/components/FeaturePage'
 
 export function AppShell() {
@@ -13,10 +15,8 @@ export function AppShell() {
         <Route path="/login" element={<LoginPage />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<DashboardPage />} />
-          <Route
-            path="/intersections"
-            element={<FeaturePage title="Intersections" description="Monitor the health and freshness of every roadway connection." />}
-          />
+          <Route path="/intersections" element={<IntersectionsPage />} />
+          <Route path="/intersections/:id" element={<IntersectionDetailPage />} />
           <Route
             path="/events"
             element={<FeaturePage title="Traffic events" description="Review congestion, detector signals, and incidents that need attention." />}

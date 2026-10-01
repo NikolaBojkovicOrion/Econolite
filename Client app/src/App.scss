@@ -257,3 +257,260 @@
   .primary-nav { width: 100%; }
   .metric-grid, .feature-grid { grid-template-columns: 1fr; }
 }
+
+.intersection-page {
+  padding-top: clamp(40px, 6vw, 76px);
+}
+
+.intersection-page-header,
+.intersection-detail-header {
+  align-items: flex-end;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  h1 {
+    color: var(--text-h);
+    font-family: var(--heading);
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    margin: 8px 0 6px;
+  }
+
+  p { margin: 0; }
+}
+
+.intersection-metrics,
+.intersection-detail-metrics {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.intersection-metrics .metric-card,
+.intersection-detail-metrics .metric-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 96px;
+  padding: 20px 24px;
+}
+
+.intersection-metrics .metric-card span:last-child,
+.intersection-detail-metrics .metric-card > span:last-child {
+  color: var(--text);
+  font-size: 0.86rem;
+}
+
+.sample-data-note {
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin: 8px 0 14px;
+  text-align: right;
+}
+
+.intersection-toolbar {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding: 14px 16px;
+}
+
+.intersection-search { flex: 1 1 300px; }
+.intersection-filter { flex: 0 1 220px; }
+
+.intersection-toolbar input,
+.intersection-toolbar select,
+.intersection-pagination select {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-h);
+  font: inherit;
+  min-height: 42px;
+  padding: 9px 12px;
+  width: 100%;
+}
+
+.intersection-toolbar input:focus-visible,
+.intersection-toolbar select:focus-visible,
+.intersection-pagination select:focus-visible {
+  border-color: var(--teal);
+  outline: 2px solid rgba(13, 117, 111, 0.2);
+  outline-offset: 1px;
+}
+
+.clear-filters,
+.secondary-action {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--teal);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 650;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 13px;
+  text-decoration: none;
+}
+
+.clear-filters:hover,
+.secondary-action:hover { background: rgba(13, 117, 111, 0.06); border-color: var(--teal); }
+.clear-filters:focus-visible,
+.secondary-action:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.intersection-table-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 24px;
+}
+
+.intersection-table-heading {
+  align-items: flex-end;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 18px;
+
+  h2 {
+    color: var(--text-h);
+    font-family: var(--heading);
+    font-size: 1.2rem;
+    margin: 5px 0 0;
+  }
+}
+
+.result-range,
+.page-count { color: var(--text); font-size: 0.82rem; }
+.intersection-table-scroll { overflow-x: auto; }
+.intersection-table { border-collapse: collapse; min-width: 850px; text-align: left; width: 100%; }
+.intersection-table th { color: var(--muted); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; padding: 12px 10px; text-transform: uppercase; white-space: nowrap; }
+.intersection-table td { border-top: 1px solid var(--border); color: var(--text); font-size: 0.86rem; padding: 13px 10px; vertical-align: middle; }
+.intersection-table tbody tr:hover { background: rgba(13, 117, 111, 0.035); }
+.intersection-table th:first-child,
+.intersection-table td:first-child { padding-left: 0; }
+.intersection-table th:last-child,
+.intersection-table td:last-child { padding-right: 0; }
+
+.intersection-name-cell { display: grid; gap: 4px; min-width: 210px; }
+.intersection-name-cell a,
+.intersection-name-cell strong { color: var(--text-h); font-weight: 650; text-decoration: none; }
+.intersection-name-cell a:hover { color: var(--teal); text-decoration: underline; text-underline-offset: 3px; }
+.intersection-name-cell a:focus-visible { border-radius: 2px; outline: 2px solid var(--teal); outline-offset: 3px; }
+.intersection-name-cell span,
+.muted-value { color: var(--muted); font-size: 0.75rem; }
+
+.status-offline { background: #e7eaec; color: #4c5b65; }
+.freshness-badge,
+.event-severity,
+.event-status { border-radius: 999px; display: inline-flex; font-size: 0.73rem; font-weight: 700; padding: 5px 9px; white-space: nowrap; }
+.freshness-fresh { background: #dff1e8; color: #176344; }
+.freshness-delayed { background: #faeadb; color: #94501f; }
+.freshness-stale { background: #f9e5df; color: #b33d2c; }
+.severity-medium,
+.severity-high { background: var(--accent-soft); color: var(--accent); }
+.event-status { background: #faeadb; color: #94501f; }
+
+.intersection-pagination {
+  align-items: center;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 18px;
+  justify-content: flex-end;
+  margin-top: 18px;
+  padding-top: 16px;
+
+  label { align-items: center; color: var(--text); display: flex; font-size: 0.8rem; gap: 8px; }
+  select { min-height: 34px; padding: 5px 8px; width: 68px; }
+}
+
+.page-controls { display: flex; gap: 8px; }
+.page-controls button { align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text-h); cursor: pointer; display: inline-flex; font-size: 1.25rem; height: 36px; justify-content: center; width: 38px; }
+.page-controls button:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); }
+.page-controls button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.page-controls button:disabled { color: #9ba6a8; cursor: not-allowed; }
+
+.intersection-empty-state { padding: 38px 16px; text-align: center; }
+.intersection-empty-state h3 { color: var(--text-h); font-family: var(--heading); font-size: 1.1rem; margin: 0 0 8px; }
+.intersection-empty-state p { margin: 0 auto 16px; max-width: 420px; }
+.compact-empty-state { padding: 30px 16px 18px; }
+.intersection-state { color: var(--text); padding: 38px 16px; text-align: center; }
+.intersection-error-state { align-items: center; background: #fff5f1; border: 1px solid #efd0c6; border-radius: 7px; color: #713a30; display: flex; gap: 18px; justify-content: space-between; padding: 20px; }
+.intersection-error-state h1,
+.intersection-error-state h3 { color: #713a30; font-family: var(--heading); font-size: 1.1rem; margin: 0 0 7px; }
+.intersection-error-state p { font-size: 0.88rem; margin: 0; }
+.intersection-error-state .trace-id { color: var(--muted); font-size: 0.76rem; margin-top: 8px; }
+
+.back-link { align-items: center; color: var(--teal); display: inline-flex; font-size: 0.9rem; font-weight: 650; gap: 7px; margin-bottom: 24px; text-decoration: none; }
+.back-link > :first-child { font-size: 1.5rem; line-height: 1; }
+.back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.back-link:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+.intersection-detail-header { align-items: center; margin-bottom: 0; }
+.intersection-detail-header h1 { max-width: 800px; }
+.intersection-detail-header p { color: var(--muted); font-size: 0.85rem; }
+.intersection-detail-badges { align-items: center; display: flex; flex: 0 0 auto; gap: 8px; padding-bottom: 8px; }
+.intersection-detail-badges .status { font-size: 0.78rem; padding: 6px 10px; }
+.intersection-detail-metrics { margin-top: 12px; }
+.intersection-detail-metrics .metric-card { min-height: 112px; }
+.intersection-detail-metrics .metric-card strong { margin: 7px 0 2px; }
+.intersection-detail-metrics .metric-card .metric-time { font-size: 1.45rem; }
+.detail-metric-label { color: var(--teal); font-size: 0.73rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.detail-freshness { font-size: 0.75rem !important; }
+.detail-freshness-delayed { color: #94501f !important; }
+.detail-freshness-stale { color: #b33d2c !important; }
+
+.intersection-detail-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 18px; }
+.detail-panel { box-shadow: none; margin: 0; padding: 24px; }
+.detail-panel h2 { color: var(--text-h); font-family: var(--heading); font-size: 1.05rem; margin: 10px 0 18px; }
+.location-coordinates { border-top: 1px solid var(--border); display: grid; gap: 12px; margin: 0; padding-top: 16px; }
+.location-coordinates div { display: grid; grid-template-columns: 110px 1fr; }
+.location-coordinates dt { color: var(--muted); font-size: 0.85rem; }
+.location-coordinates dd { color: var(--text-h); font-size: 0.9rem; margin: 0; }
+.panel-note { color: var(--muted); font-size: 0.73rem; margin: 15px 0 0; }
+.freshness-panel > p { font-size: 0.9rem; margin-bottom: 18px; }
+.freshness-callout { align-items: center; background: #eaf4ef; border-radius: 6px; color: #176344; display: flex; font-size: 0.82rem; font-weight: 650; gap: 10px; padding: 12px 14px; }
+.freshness-callout-delayed { background: #fff5e9; color: #80531f; }
+.freshness-callout-stale { background: #fff0ec; color: #a33b2b; }
+.freshness-dot { background: currentColor; border-radius: 50%; height: 9px; width: 9px; }
+.event-table-panel { margin-top: 18px; }
+.event-table { min-width: 620px; }
+.intersection-not-found { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; box-shadow: var(--shadow); margin-top: 22px; max-width: 680px; padding: 28px; }
+.intersection-not-found h1 { color: var(--text-h); font-family: var(--heading); font-size: 1.65rem; margin: 10px 0; }
+.intersection-not-found p { margin: 0 0 20px; }
+
+.sr-only { clip: rect(0, 0, 0, 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+
+@media (max-width: 820px) {
+  .intersection-detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .intersection-metrics,
+  .intersection-detail-metrics { grid-template-columns: 1fr; }
+  .intersection-page-header,
+  .intersection-detail-header { align-items: flex-start; flex-direction: column; }
+  .intersection-detail-badges { padding: 0; }
+  .intersection-toolbar { align-items: stretch; flex-direction: column; }
+  .intersection-search,
+  .intersection-filter { flex-basis: auto; }
+  .intersection-table-panel { padding: 18px 14px; }
+  .intersection-table-heading { align-items: flex-start; flex-direction: column; }
+  .intersection-pagination { flex-wrap: wrap; gap: 12px; justify-content: space-between; }
+  .intersection-error-state { align-items: flex-start; flex-direction: column; }
+  .intersection-pagination label { flex: 1 1 100%; justify-content: space-between; }
+  .page-count { margin-right: auto; }
+  .intersection-detail-header h1 { font-size: 1.85rem; }
+}

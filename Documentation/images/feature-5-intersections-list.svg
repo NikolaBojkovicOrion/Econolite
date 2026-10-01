@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Intersections list screen mockup</title>
+  <desc id="desc">A light traffic operations dashboard with summary counts, search and filter controls, and an intersections table showing health and detector freshness separately.</desc>
+  <rect width="1200" height="900" fill="#f1f5f2"/>
+  <rect width="1200" height="76" fill="#fbfcfa"/>
+  <path d="M0 75.5H1200" stroke="#d7e1dd"/>
+  <text x="56" y="30" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="1.2" fill="#16817d">ECONOLITE</text>
+  <text x="56" y="53" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="650" fill="#18303d">Mobility control room</text>
+  <rect x="372" y="18" width="126" height="40" rx="20" fill="#f9e7e0"/>
+  <text x="397" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#cf513b">Intersections</text>
+  <text x="523" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#60717b">Overview</text>
+  <text x="633" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#60717b">Events</text>
+  <text x="719" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#60717b">Audit</text>
+  <text x="934" y="43" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#536671">operator@econolite.local</text>
+  <rect x="1074" y="17" width="86" height="40" rx="20" fill="#fbfcfa" stroke="#d7e1dd"/>
+  <text x="1091" y="42" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#536671">Sign out</text>
+
+  <text x="58" y="132" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.4" fill="#d94f39">NETWORK STATUS</text>
+  <text x="58" y="176" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#142d3a">Intersections</text>
+  <text x="58" y="207" font-family="Segoe UI, Arial, sans-serif" font-size="16" fill="#63737b">Monitor intersection health and the freshness of detector data.</text>
+
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <rect x="58" y="236" width="344" height="98" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="82" y="278" font-size="30" font-weight="700" fill="#142d3a">24</text>
+    <text x="82" y="307" font-size="15" fill="#63737b">Intersections monitored</text>
+    <rect x="428" y="236" width="344" height="98" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="452" y="278" font-size="30" font-weight="700" fill="#142d3a">18</text>
+    <text x="452" y="307" font-size="15" fill="#63737b">Healthy intersections</text>
+    <rect x="798" y="236" width="344" height="98" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="822" y="278" font-size="30" font-weight="700" fill="#142d3a">3</text>
+    <text x="822" y="307" font-size="15" fill="#63737b">Delayed or stale detectors</text>
+
+    <rect x="58" y="356" width="1084" height="70" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <rect x="76" y="371" width="492" height="40" rx="6" fill="#ffffff" stroke="#ccd8d4"/>
+    <circle cx="96" cy="390" r="7" fill="none" stroke="#71828a" stroke-width="1.7"/>
+    <path d="M101 395l5 5" stroke="#71828a" stroke-width="1.7"/>
+    <text x="118" y="396" font-size="14" fill="#829098">Search intersection name</text>
+    <rect x="584" y="371" width="235" height="40" rx="6" fill="#ffffff" stroke="#ccd8d4"/>
+    <text x="602" y="396" font-size="14" fill="#50636e">All health statuses</text>
+    <path d="M790 387l6 6 6-6" fill="none" stroke="#63737b" stroke-width="1.6"/>
+    <rect x="835" y="371" width="235" height="40" rx="6" fill="#ffffff" stroke="#ccd8d4"/>
+    <text x="853" y="396" font-size="14" fill="#50636e">All freshness states</text>
+    <path d="M1040 387l6 6 6-6" fill="none" stroke="#63737b" stroke-width="1.6"/>
+    <text x="1082" y="396" font-size="13" font-weight="600" fill="#16817d">Clear</text>
+
+    <rect x="58" y="448" width="1084" height="382" rx="9" fill="#fbfcfa" stroke="#d8e1dd"/>
+    <text x="82" y="484" font-size="14" font-weight="700" fill="#16817d">INTERSECTION DIRECTORY</text>
+    <text x="82" y="511" font-size="18" font-weight="650" fill="#18303d">24 intersections</text>
+    <text x="995" y="506" font-size="13" fill="#63737b">Showing 1-5 of 24</text>
+    <path d="M82 530H1118" stroke="#dce4e0"/>
+    <text x="82" y="560" font-size="12" font-weight="700" fill="#71818a">INTERSECTION</text>
+    <text x="494" y="560" font-size="12" font-weight="700" fill="#71818a">HEALTH</text>
+    <text x="630" y="560" font-size="12" font-weight="700" fill="#71818a">SPEED</text>
+    <text x="739" y="560" font-size="12" font-weight="700" fill="#71818a">ACTIVE EVENTS</text>
+    <text x="878" y="560" font-size="12" font-weight="700" fill="#71818a">LAST UPDATE</text>
+    <text x="1030" y="560" font-size="12" font-weight="700" fill="#71818a">FRESHNESS</text>
+    <path d="M82 575H1118" stroke="#e0e7e3"/>
+
+    <text x="82" y="608" font-size="15" font-weight="600" fill="#254252">Harbor Boulevard / Katella Avenue</text>
+    <text x="82" y="628" font-size="12" fill="#87949a">INT-0102</text>
+    <rect x="488" y="589" width="79" height="27" rx="14" fill="#e0f1e9"/><text x="503" y="607" font-size="12" font-weight="650" fill="#19735d">Healthy</text>
+    <text x="630" y="607" font-size="14" fill="#536671">38 mph</text><text x="775" y="607" font-size="14" fill="#536671">0</text><text x="878" y="607" font-size="14" fill="#536671">2 min ago</text>
+    <rect x="1023" y="589" width="66" height="27" rx="14" fill="#e0f1e9"/><text x="1038" y="607" font-size="12" font-weight="650" fill="#19735d">Fresh</text>
+    <path d="M82 641H1118" stroke="#e0e7e3"/>
+
+    <text x="82" y="675" font-size="15" font-weight="600" fill="#254252">Lincoln Avenue / Euclid Street</text>
+    <text x="82" y="695" font-size="12" fill="#87949a">INT-0101</text>
+    <rect x="488" y="656" width="79" height="27" rx="14" fill="#e0f1e9"/><text x="503" y="674" font-size="12" font-weight="650" fill="#19735d">Healthy</text>
+    <text x="630" y="674" font-size="14" fill="#536671">24 mph</text><text x="775" y="674" font-size="14" fill="#536671">1</text><text x="878" y="674" font-size="14" fill="#536671">8 min ago</text>
+    <rect x="1023" y="656" width="83" height="27" rx="14" fill="#faeadb"/><text x="1036" y="674" font-size="12" font-weight="650" fill="#aa5c25">Delayed</text>
+    <path d="M82 708H1118" stroke="#e0e7e3"/>
+
+    <text x="82" y="742" font-size="15" font-weight="600" fill="#254252">Main Street / Broadway</text>
+    <text x="82" y="762" font-size="12" fill="#87949a">INT-0103</text>
+    <rect x="480" y="723" width="91" height="27" rx="14" fill="#f9e5df"/><text x="493" y="741" font-size="12" font-weight="650" fill="#c74934">Degraded</text>
+    <text x="630" y="741" font-size="13" fill="#87949a">Unavailable</text><text x="775" y="741" font-size="14" fill="#536671">2</text><text x="878" y="741" font-size="14" fill="#536671">37 min ago</text>
+    <rect x="1023" y="723" width="66" height="27" rx="14" fill="#f9e5df"/><text x="1036" y="741" font-size="12" font-weight="650" fill="#c74934">Stale</text>
+    <path d="M82 775H1118" stroke="#e0e7e3"/>
+
+    <text x="82" y="809" font-size="15" font-weight="600" fill="#254252">Maple Avenue / Seventh Street</text>
+    <text x="82" y="821" font-size="12" fill="#87949a">INT-0104</text>
+    <rect x="488" y="790" width="79" height="27" rx="14" fill="#e0f1e9"/><text x="503" y="808" font-size="12" font-weight="650" fill="#19735d">Healthy</text>
+    <text x="630" y="808" font-size="14" fill="#536671">31 mph</text><text x="775" y="808" font-size="14" fill="#536671">0</text><text x="878" y="808" font-size="14" fill="#536671">1 min ago</text>
+    <rect x="1023" y="790" width="66" height="27" rx="14" fill="#e0f1e9"/><text x="1038" y="808" font-size="12" font-weight="650" fill="#19735d">Fresh</text>
+
+    <text x="82" y="854" font-size="13" fill="#63737b">Rows per page: 5</text>
+    <text x="891" y="854" font-size="13" fill="#63737b">Page 1 of 5</text>
+    <rect x="1030" y="837" width="38" height="34" rx="6" fill="#f4f7f5" stroke="#d8e1dd"/><path d="M1053 848l-6 6 6 6" fill="none" stroke="#849198" stroke-width="1.7"/>
+    <rect x="1077" y="837" width="38" height="34" rx="6" fill="#ffffff" stroke="#cbd8d3"/><path d="M1091 848l6 6-6 6" fill="none" stroke="#536671" stroke-width="1.7"/>
+  </g>
+</svg>

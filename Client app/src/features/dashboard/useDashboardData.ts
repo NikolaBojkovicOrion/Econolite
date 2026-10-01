@@ -7,6 +7,7 @@ import type { Intersection, TrafficEvent } from '../../types/traffic'
 type DashboardAction =
   | { type: 'loading' }
   | { type: 'loaded'; intersections: Intersection[]; events: TrafficEvent[] }
+  | { type: 'event-received'; event: TrafficEvent }
   | { type: 'failed'; message: string; traceId: string | null }
 
 const initialDashboardState: DashboardState = {
@@ -23,6 +24,14 @@ export function dashboardReducer(state: DashboardState, action: DashboardAction)
       return { ...state, status: 'loading' }
     case 'loaded':
       return { status: 'ready', intersections: action.intersections, events: action.events, errorMessage: null, traceId: null }
+    case 'event-received': {
+      const events = state.events.filter((event) => event.id !== action.event.id)
+      if (action.event.status !== 'Resolved') {
+        events.unshift(action.event)
+      }
+
+      return { ...state, events }
+    }
     case 'failed':
       return { ...state, status: 'error', errorMessage: action.message, traceId: action.traceId }
     default:
@@ -30,7 +39,11 @@ export function dashboardReducer(state: DashboardState, action: DashboardAction)
   }
 }
 
-export function useDashboardData(): { dashboard: DashboardState; retry: () => void } {
+export function useDashboardData(): {
+  dashboard: DashboardState
+  retry: () => void
+  receiveEvent: (event: TrafficEvent) => void
+} {
   const [dashboard, dispatch] = useReducer(dashboardReducer, initialDashboardState)
 
   async function loadDashboard(signal?: AbortSignal): Promise<void> {
@@ -65,5 +78,9 @@ export function useDashboardData(): { dashboard: DashboardState; retry: () => vo
     void loadDashboard()
   }
 
-  return { dashboard, retry }
+  function receiveEvent(event: TrafficEvent): void {
+    dispatch({ type: 'event-received', event })
+  }
+
+  return { dashboard, retry, receiveEvent }
 }

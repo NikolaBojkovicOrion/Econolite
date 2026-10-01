@@ -5,6 +5,8 @@ import type { IntersectionPageResponse } from '../../../types/traffic'
 import { getIntersectionPage } from '../intersectionApi'
 import { IntersectionDirectoryTable } from '../components/IntersectionDirectoryTable'
 import { IntersectionFilters } from '../components/IntersectionFilters'
+import { useTrafficUpdates } from '../../trafficEvents/useTrafficUpdates'
+import { TrafficConnectionStatus } from '../../trafficEvents/components/TrafficConnectionStatus'
 
 const freshnessStates = ['Fresh', 'Delayed', 'Stale'] as const
 const searchDebounceMilliseconds = 300
@@ -20,6 +22,13 @@ export function IntersectionsPage() {
   const [error, setError] = useState<{ message: string; traceId?: string } | null>(null)
   const [retryCount, setRetryCount] = useState(0)
   const normalizedSearch = search.trim()
+
+  const refreshIntersections = (): void => setRetryCount((count) => count + 1)
+  const connectionState = useTrafficUpdates({
+    onTrafficEvent: refreshIntersections,
+    onIntersectionStatus: refreshIntersections,
+    onReconnect: refreshIntersections,
+  })
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -82,6 +91,7 @@ export function IntersectionsPage() {
           <p>Monitor intersection health and the freshness of detector data.</p>
         </div>
       </header>
+      <TrafficConnectionStatus state={connectionState} />
 
       <div className="intersection-metrics" aria-label="Intersection summary">
         <article className="metric-card">

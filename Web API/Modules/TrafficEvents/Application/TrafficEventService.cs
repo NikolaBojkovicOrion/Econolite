@@ -8,7 +8,10 @@ using System.Data;
 
 namespace Econolite_API.Modules.TrafficEvents.Application;
 
-public sealed class TrafficEventService(EconoliteDbContext dbContext, IAuditService auditService) : ITrafficEventService
+public sealed class TrafficEventService(
+    EconoliteDbContext dbContext,
+    IAuditService auditService,
+    ITrafficEventPublisher trafficEventPublisher) : ITrafficEventService
 {
     private static readonly string[] SupportedTypes = ["Congestion", "SlowTraffic", "Incident"];
     private static readonly string[] SupportedSeverities = ["Low", "Medium", "High", "Critical"];
@@ -109,7 +112,16 @@ public sealed class TrafficEventService(EconoliteDbContext dbContext, IAuditServ
             return Failure("Duplicate detector event", "An event with this source system and external event ID has already been processed.", StatusCodes.Status409Conflict);
         }
 
-        return new TrafficEventCreationResult(ToResponse(trafficEvent), null, null, null);
+        var response = ToResponse(trafficEvent);
+        await trafficEventPublisher.PublishCreatedAsync(
+            response,
+            new IntersectionStatusUpdateResponse(
+                intersection.Id,
+                intersection.Status,
+                intersection.LastDetectorUpdate),
+            cancellationToken);
+
+        return new TrafficEventCreationResult(response, null, null, null);
     }
 
     public Task<TrafficEventMutationResult> AcknowledgeAsync(
@@ -172,7 +184,10 @@ public sealed class TrafficEventService(EconoliteDbContext dbContext, IAuditServ
         await dbContext.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
 
-        return new TrafficEventMutationResult(ToResponse(trafficEvent), null, null, null);
+        var response = ToResponse(trafficEvent);
+        await trafficEventPublisher.PublishUpdatedAsync(response, cancellationToken);
+
+        return new TrafficEventMutationResult(response, null, null, null);
     }
 
     private static TrafficEventResponse ToResponse(TrafficEvent trafficEvent) => new(

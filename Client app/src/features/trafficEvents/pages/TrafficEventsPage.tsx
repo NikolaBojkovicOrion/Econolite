@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../auth'
+import { TrafficConnectionStatus } from '../components/TrafficConnectionStatus'
+import { useTrafficUpdates } from '../useTrafficUpdates'
 import { ApiError } from '../../../shared/api/ApiError'
 import type { TrafficEvent } from '../../../types/traffic'
 import {
@@ -19,6 +21,20 @@ export function TrafficEventsPage() {
   const [actionError, setActionError] = useState<string | null>(null)
   const [pendingEventId, setPendingEventId] = useState<string | null>(null)
   const canResolveCritical = user?.roles.some((role) => role === 'Supervisor' || role === 'Admin') ?? false
+
+  const connectionState = useTrafficUpdates({
+    onTrafficEvent: (event) => {
+      setEvents((currentEvents) => {
+        const nextEvents = currentEvents.filter((currentEvent) => currentEvent.id !== event.id)
+        if (event.status !== 'Resolved') {
+          nextEvents.unshift(event)
+        }
+        return nextEvents
+      })
+    },
+    onIntersectionStatus: () => undefined,
+    onReconnect: () => void loadEvents(),
+  })
 
   async function loadEvents(signal?: AbortSignal): Promise<void> {
     try {
@@ -82,6 +98,7 @@ export function TrafficEventsPage() {
         </div>
         <p>Review active and acknowledged incidents, then record the operator response.</p>
       </header>
+      <TrafficConnectionStatus state={connectionState} />
       {actionError && <p className="placeholder-note form-error" role="alert">{actionError}</p>}
       {loadState === 'loading' && <p role="status">Loading traffic events...</p>}
       {loadState === 'error' && (

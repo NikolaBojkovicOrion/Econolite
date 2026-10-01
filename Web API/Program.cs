@@ -18,10 +18,12 @@ using Econolite_API.Modules.TrafficEvents.Application;
 using Econolite_API.Modules.TrafficEvents.Application.Interfaces;
 using Econolite_API.Modules.Audit.Application;
 using Econolite_API.Modules.Audit.Application.Interfaces;
+using Econolite_API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddProblemDetails(options =>
 {
     options.CustomizeProblemDetails = context =>
@@ -48,12 +50,26 @@ builder.Services.AddScoped<IIntersectionService, IntersectionService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<ITrafficEventService, TrafficEventService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddSingleton<ITrafficEventPublisher, SignalRTrafficEventPublisher>();
 builder.Services.AddSingleton<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
 
 var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(accessToken) && context.HttpContext.Request.Path.StartsWithSegments("/hubs/traffic"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            },
+        };
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -92,7 +108,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(allowedOrigins)
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -122,6 +139,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<TrafficHub>("/hubs/traffic");
 app.MapHealthChecks("/health");
 app.MapGet("/version", (IHostEnvironment environment) => Results.Ok(new
 {

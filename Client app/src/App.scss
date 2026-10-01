@@ -279,6 +279,11 @@
 .status-medium { background: #fff0d5; color: #805713; }
 .status-high, .status-critical { background: #fce6de; color: #a12e20; }
 .visually-hidden { clip: rect(0, 0, 0, 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+.connection-status { align-items: center; color: var(--text); display: flex; font-size: 0.78rem; gap: 8px; margin: 16px 0; }
+.connection-indicator { background: #8a9290; border-radius: 50%; height: 8px; width: 8px; }
+.connection-connected .connection-indicator { background: #187548; }
+.connection-reconnecting .connection-indicator, .connection-connecting .connection-indicator { background: #bb7b18; }
+.connection-disconnected .connection-indicator { background: #b33a2c; }
 
 @media (max-width: 720px) {
   .topbar, .page-header { align-items: flex-start; flex-direction: column; }

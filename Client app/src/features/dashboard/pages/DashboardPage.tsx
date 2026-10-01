@@ -1,11 +1,18 @@
+import { useTrafficUpdates } from '../../trafficEvents/useTrafficUpdates'
 import { ActiveEventList } from '../../trafficEvents/components/ActiveEventList'
+import { TrafficConnectionStatus } from '../../trafficEvents/components/TrafficConnectionStatus'
 import { SimulatedDetectorForm } from '../../trafficEvents/components/SimulatedDetectorForm'
 import { IntersectionStatusList } from '../../intersections/components/IntersectionStatusList'
 import { MetricCard } from '../components/MetricCard'
 import { useDashboardData } from '../useDashboardData'
 
 export function DashboardPage() {
-  const { dashboard, retry } = useDashboardData()
+  const { dashboard, retry, receiveEvent } = useDashboardData()
+  const connectionState = useTrafficUpdates({
+    onTrafficEvent: receiveEvent,
+    onIntersectionStatus: () => retry(),
+    onReconnect: retry,
+  })
   const healthyCount = dashboard.intersections.filter(
     (intersection) => intersection.status === 'Healthy',
   ).length
@@ -34,6 +41,7 @@ export function DashboardPage() {
           label="Events needing review"
         />
       </div>
+      <TrafficConnectionStatus state={connectionState} />
       {dashboard.status === 'loading' && (
         <div className="placeholder-note">Loading current intersection data...</div>
       )}

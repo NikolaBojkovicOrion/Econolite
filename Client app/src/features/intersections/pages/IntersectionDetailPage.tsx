@@ -5,6 +5,8 @@ import type { IntersectionDetailResponse } from '../../../types/traffic'
 import { getIntersectionDetails } from '../intersectionApi'
 import { formatDetectorUpdate } from '../intersectionFormatting'
 import { IntersectionEventsTable } from '../components/IntersectionEventsTable'
+import { useTrafficUpdates } from '../../trafficEvents/useTrafficUpdates'
+import { TrafficConnectionStatus } from '../../trafficEvents/components/TrafficConnectionStatus'
 
 export function IntersectionDetailPage() {
   const { id } = useParams()
@@ -13,6 +15,17 @@ export function IntersectionDetailPage() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error' | 'not-found'>('loading')
   const [error, setError] = useState<{ message: string; traceId?: string } | null>(null)
   const [retryCount, setRetryCount] = useState(0)
+
+  const refreshDetail = (): void => setRetryCount((count) => count + 1)
+  const connectionState = useTrafficUpdates({
+    onTrafficEvent: refreshDetail,
+    onIntersectionStatus: (update) => {
+      if (update.intersectionId === intersectionId) {
+        refreshDetail()
+      }
+    },
+    onReconnect: refreshDetail,
+  })
 
   useEffect(() => {
     if (!Number.isInteger(intersectionId) || intersectionId < 1) {
@@ -108,6 +121,7 @@ export function IntersectionDetailPage() {
           <span className={`freshness-badge freshness-${intersection.freshness.toLowerCase()}`}>{intersection.freshness}</span>
         </div>
       </header>
+      <TrafficConnectionStatus state={connectionState} />
 
       <div className="intersection-detail-metrics">
         <article className="metric-card">

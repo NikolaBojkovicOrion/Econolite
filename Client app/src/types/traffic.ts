@@ -47,3 +47,12 @@ export interface TrafficEvent {
   status: string
   detectedAt: string
 }
+
+export interface AuditEntry {
+  id: string
+  userId: string | null
+  action: string
+  entityType: string
+  entityId: string
+  createdAt: string
+}

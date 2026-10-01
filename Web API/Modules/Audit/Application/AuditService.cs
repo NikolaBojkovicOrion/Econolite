@@ -34,14 +34,23 @@ public sealed class AuditService(EconoliteDbContext dbContext) : IAuditService
             .ToListAsync(cancellationToken);
     }
 
-    public void Record(Guid? userId, string action, string entityType, string entityId)
+    public AuditEntryResponse Record(Guid? userId, string action, string entityType, string entityId)
     {
-        dbContext.AuditEntries.Add(new AuditEntry(
+        var entry = new AuditEntry(
             Guid.NewGuid(),
             userId,
             action,
             entityType,
             entityId,
-            DateTimeOffset.UtcNow));
+            DateTimeOffset.UtcNow);
+        dbContext.AuditEntries.Add(entry);
+
+        return new AuditEntryResponse(
+            entry.Id,
+            entry.UserId,
+            entry.Action,
+            entry.EntityType,
+            entry.EntityId,
+            entry.CreatedAt);
     }
 }

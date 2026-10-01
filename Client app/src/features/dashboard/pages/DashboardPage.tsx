@@ -30,11 +30,11 @@ export function DashboardPage() {
       <div className="metric-grid">
         <MetricCard
           value={dashboard.status === 'ready' ? dashboard.intersections.length : '—'}
-          label="Intersections monitored"
+          label="Intersections shown"
         />
         <MetricCard
           value={dashboard.status === 'ready' ? healthyCount : '—'}
-          label="Healthy connections"
+          label="Healthy in this view"
         />
         <MetricCard
           value={dashboard.status === 'ready' ? dashboard.events.length : '—'}

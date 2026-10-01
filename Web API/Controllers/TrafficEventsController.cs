@@ -4,6 +4,7 @@ using Econolite_API.Modules.Identity.Infrastructure.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace Econolite_API.Controllers;
 
@@ -15,9 +16,11 @@ public sealed class TrafficEventsController(
     IAuthorizationService authorizationService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyCollection<TrafficEventResponse>>> GetActive(CancellationToken cancellationToken)
+    public async Task<ActionResult<IReadOnlyCollection<TrafficEventResponse>>> GetActive(
+        [FromQuery, Range(1, 100)] int? limit,
+        CancellationToken cancellationToken)
     {
-        var events = await trafficEventService.GetOpenAsync(cancellationToken);
+        var events = await trafficEventService.GetOpenAsync(limit, cancellationToken);
         return Ok(events);
     }
 

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { ApiError } from '../../../shared/api/ApiError'
-import { getAuditEntries, type AuditEntry } from '../auditApi'
+import { getAuditEntries } from '../auditApi'
+import type { AuditEntry } from '../../../types/traffic'
+import { TrafficConnectionStatus } from '../../trafficEvents/components/TrafficConnectionStatus'
+import { useTrafficUpdates } from '../../trafficEvents/useTrafficUpdates'
 
 type LoadState = 'loading' | 'ready' | 'error'
 
@@ -10,9 +13,32 @@ export function AuditPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [traceId, setTraceId] = useState<string | null>(null)
 
+  const connectionState = useTrafficUpdates({
+    onTrafficEvent: () => undefined,
+    onIntersectionStatus: () => undefined,
+    onReconnect: () => void loadEntries(),
+    onAuditEntry: (entry) => {
+      setEntries((currentEntries) => {
+        const updatedEntries = [entry, ...currentEntries.filter((current) => current.id !== entry.id)]
+        return updatedEntries
+          .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
+          .slice(0, 100)
+      })
+      setLoadState('ready')
+    },
+  })
+
   async function loadEntries(signal?: AbortSignal): Promise<void> {
     try {
-      setEntries(await getAuditEntries(signal))
+      const loadedEntries = await getAuditEntries(signal)
+      setEntries((currentEntries) => {
+        const entriesById = new Map(
+          [...loadedEntries, ...currentEntries].map((entry) => [entry.id, entry]),
+        )
+        return [...entriesById.values()]
+          .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
+          .slice(0, 100)
+      })
       setLoadState('ready')
       setErrorMessage(null)
       setTraceId(null)
@@ -40,6 +66,7 @@ export function AuditPage() {
         </div>
         <p>Recent operator actions recorded against traffic events.</p>
       </header>
+      <TrafficConnectionStatus state={connectionState} />
       {loadState === 'loading' && <p role="status">Loading audit history...</p>}
       {loadState === 'error' && (
         <div className="placeholder-note" role="alert">

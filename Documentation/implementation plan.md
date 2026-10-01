@@ -751,6 +751,25 @@ The finished project should demonstrate a complete, explainable vertical slice r
 
 The following features have been implemented in the current workspace.
 
+### Feature 7: Acknowledge, Resolve, and Audit
+
+**Status:** Implemented (compile-checked; unit and integration tests not run by request)
+
+- Added acknowledge and resolve API operations with state-transition validation and role-based critical-event resolution.
+- Persisted each successful event change with its audit record in a single transaction; repeated acknowledgement does not create another audit entry.
+- Added a recent audit API and frontend event actions and audit history view.
+- Added post-commit SignalR notifications for event state and audit entry changes.
+
+### Feature 8: Real-Time Updates with SignalR
+
+**Status:** Implemented (compile-checked; unit and integration tests not run by request)
+
+- Added the authenticated traffic hub, JWT query-token handling, and credentialed CORS for configured client origins.
+- Publishes created/updated traffic events, intersection status, and audit-entry messages only after persistence succeeds.
+- Added a React SignalR connection with reconnect handling, visible connection state, ID-based deduplication, and authoritative refresh after reconnect.
+- Dashboard, intersection list/detail, events, and audit views respond to live updates.
+- Multi-instance scaling still requires a SignalR backplane or managed SignalR service.
+
 ### Feature 1: Application Foundation and Contracts
 
 **Status:** Implemented
@@ -816,6 +835,6 @@ The following features have been implemented in the current workspace.
 
 ### Remaining Features
 
-- **Feature 7:** Acknowledge, Resolve, and Audit
-- **Feature 8:** Real-Time Updates with SignalR
 - **Feature 9:** Deployment and Production Readiness
+
+Feature 7 and Feature 8 received frontend typecheck/build and backend compile checks. Unit tests, integration tests, and smoke testing were not run for these features by request.

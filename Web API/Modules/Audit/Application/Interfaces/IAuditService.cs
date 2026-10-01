@@ -5,5 +5,5 @@ namespace Econolite_API.Modules.Audit.Application.Interfaces;
 public interface IAuditService
 {
     Task<IReadOnlyCollection<AuditEntryResponse>> GetRecentAsync(string? entityId, CancellationToken cancellationToken);
-    void Record(Guid? userId, string action, string entityType, string entityId);
+    AuditEntryResponse Record(Guid? userId, string action, string entityType, string entityId);
 }

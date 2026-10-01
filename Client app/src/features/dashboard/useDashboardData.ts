@@ -4,6 +4,8 @@ import { getActiveTrafficEvents } from '../trafficEvents/trafficEventApi'
 import type { DashboardState } from './dashboardTypes'
 import type { Intersection, TrafficEvent } from '../../types/traffic'
 
+const overviewItemLimit = 5
+
 type DashboardAction =
   | { type: 'loading' }
   | { type: 'loaded'; intersections: Intersection[]; events: TrafficEvent[] }
@@ -49,8 +51,8 @@ export function useDashboardData(): {
   async function loadDashboard(signal?: AbortSignal): Promise<void> {
     try {
       const [intersections, events] = await Promise.all([
-        getIntersections(signal),
-        getActiveTrafficEvents(signal),
+        getIntersections(signal, overviewItemLimit),
+        getActiveTrafficEvents(signal, overviewItemLimit),
       ])
 
       dispatch({ type: 'loaded', intersections, events })

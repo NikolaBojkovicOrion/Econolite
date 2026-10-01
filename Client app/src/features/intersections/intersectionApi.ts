@@ -29,8 +29,8 @@ export function getIntersectionPage(
   return getJson<IntersectionPageResponse>(`/api/intersections?${query.toString()}`, signal)
 }
 
-export function getIntersections(signal?: AbortSignal): Promise<Intersection[]> {
-  return getIntersectionPage({ pageNumber: 1, pageSize: 100 }, signal)
+export function getIntersections(signal?: AbortSignal, pageSize = 100): Promise<Intersection[]> {
+  return getIntersectionPage({ pageNumber: 1, pageSize }, signal)
     .then((response) => response.items)
 }
 

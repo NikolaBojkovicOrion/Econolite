@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../auth'
 import { getAccessToken } from '../auth/authStorage'
 import { apiBaseUrl } from '../../shared/api/httpClient'
-import type { TrafficEvent } from '../../types/traffic'
+import type { AuditEntry, TrafficEvent } from '../../types/traffic'
 
 export interface IntersectionStatusUpdate {
   intersectionId: number
@@ -17,6 +17,7 @@ export interface TrafficUpdateHandlers {
   onTrafficEvent: (event: TrafficEvent) => void
   onIntersectionStatus: (update: IntersectionStatusUpdate) => void
   onReconnect: () => void
+  onAuditEntry?: (entry: AuditEntry) => void
 }
 
 export function useTrafficUpdates(handlers: TrafficUpdateHandlers): TrafficConnectionState {
@@ -94,6 +95,10 @@ export function useTrafficUpdates(handlers: TrafficUpdateHandlers): TrafficConne
       if (import.meta.env.DEV) console.debug('SignalR IntersectionStatusUpdated received.', update)
       handlersRef.current.onIntersectionStatus(update)
     })
+    connection.on('AuditEntryCreated', (entry: AuditEntry) => {
+      if (import.meta.env.DEV) console.debug('SignalR AuditEntryCreated received.', entry)
+      handlersRef.current.onAuditEntry?.(entry)
+    })
     connection.onreconnecting((error) => {
       setConnectionState('reconnecting')
       if (import.meta.env.DEV) console.warn('SignalR reconnecting.', error)
@@ -120,6 +125,7 @@ export function useTrafficUpdates(handlers: TrafficUpdateHandlers): TrafficConne
       connection.off('TrafficEventCreated')
       connection.off('TrafficEventUpdated')
       connection.off('IntersectionStatusUpdated')
+      connection.off('AuditEntryCreated')
       void connection.stop()
     }
   }, [user?.id])

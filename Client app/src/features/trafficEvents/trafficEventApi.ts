@@ -9,8 +9,9 @@ export interface CreateTrafficEventRequest {
   externalEventId: string
 }
 
-export function getActiveTrafficEvents(signal?: AbortSignal): Promise<TrafficEvent[]> {
-  return getJson<TrafficEvent[]>('/api/events', signal)
+export function getActiveTrafficEvents(signal?: AbortSignal, limit?: number): Promise<TrafficEvent[]> {
+  const query = limit === undefined ? '' : `?limit=${limit}`
+  return getJson<TrafficEvent[]>(`/api/events${query}`, signal)
 }
 
 export function createTrafficEvent(

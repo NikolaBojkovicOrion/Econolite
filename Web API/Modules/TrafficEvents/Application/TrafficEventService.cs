@@ -16,12 +16,21 @@ public sealed class TrafficEventService(
     private static readonly string[] SupportedTypes = ["Congestion", "SlowTraffic", "Incident"];
     private static readonly string[] SupportedSeverities = ["Low", "Medium", "High", "Critical"];
 
-    public async Task<IReadOnlyCollection<TrafficEventResponse>> GetOpenAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<TrafficEventResponse>> GetOpenAsync(
+        int? limit,
+        CancellationToken cancellationToken)
     {
-        return await dbContext.TrafficEvents
+        IQueryable<TrafficEvent> query = dbContext.TrafficEvents
             .AsNoTracking()
             .Where(trafficEvent => trafficEvent.Status != "Resolved")
-            .OrderByDescending(trafficEvent => trafficEvent.DetectedAt)
+            .OrderByDescending(trafficEvent => trafficEvent.DetectedAt);
+
+        if (limit.HasValue)
+        {
+            query = query.Take(limit.Value);
+        }
+
+        return await query
             .Select(trafficEvent => new TrafficEventResponse(
                 trafficEvent.Id,
                 trafficEvent.IntersectionId,
@@ -175,7 +184,7 @@ public sealed class TrafficEventService(
                 StatusCodes.Status409Conflict);
         }
 
-        auditService.Record(
+        var auditEntry = auditService.Record(
             userId,
             resolve ? "TrafficEvent.Resolved" : "TrafficEvent.Acknowledged",
             "TrafficEvent",
@@ -186,6 +195,7 @@ public sealed class TrafficEventService(
 
         var response = ToResponse(trafficEvent);
         await trafficEventPublisher.PublishUpdatedAsync(response, cancellationToken);
+        await trafficEventPublisher.PublishAuditEntryCreatedAsync(auditEntry, cancellationToken);
 
         return new TrafficEventMutationResult(response, null, null, null);
     }

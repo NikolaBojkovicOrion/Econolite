@@ -4,7 +4,7 @@ namespace Econolite_API.Modules.TrafficEvents.Application.Interfaces;
 
 public interface ITrafficEventService
 {
-    Task<IReadOnlyCollection<TrafficEventResponse>> GetOpenAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyCollection<TrafficEventResponse>> GetOpenAsync(int? limit, CancellationToken cancellationToken);
     Task<TrafficEventCreationResult> CreateAsync(
         int intersectionId,
         CreateTrafficEventRequest request,

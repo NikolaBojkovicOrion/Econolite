@@ -16,16 +16,29 @@ public sealed class IntersectionsApiTests : IClassFixture<ApiFactory>
     }
 
     [Fact]
-    public async Task Get_intersections_returns_seeded_data_over_http()
+    public async Task Get_intersections_returns_seeded_page_over_http()
     {
         var client = await CreateAuthenticatedClient();
         var response = await client.GetAsync("/api/intersections");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var intersections = await response.Content.ReadFromJsonAsync<IReadOnlyCollection<IntersectionResponse>>();
+        var page = await response.Content.ReadFromJsonAsync<IntersectionPageResponse>();
 
-        Assert.NotNull(intersections);
-        Assert.NotEmpty(intersections);
+        Assert.NotNull(page);
+        Assert.NotEmpty(page.Items);
+        Assert.Equal(1, page.PageNumber);
+        Assert.Equal(10, page.PageSize);
+        Assert.True(page.TotalCount >= page.Items.Count);
+        Assert.Equal(8, page.Summary.TotalCount);
+    }
+
+    [Fact]
+    public async Task Get_intersections_rejects_invalid_page_number()
+    {
+        var client = await CreateAuthenticatedClient();
+        var response = await client.GetAsync("/api/intersections?pageNumber=0");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

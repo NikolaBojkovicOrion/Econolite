@@ -1,67 +1,12 @@
 import { useEffect, useState } from 'react'
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  type ColumnDef,
-  type PaginationState,
-} from '@tanstack/react-table'
-import { Link } from 'react-router-dom'
+import type { PaginationState } from '@tanstack/react-table'
 import { ApiError } from '../../../shared/api/ApiError'
-import type { IntersectionPageResponse, IntersectionSummary } from '../../../types/traffic'
+import type { IntersectionPageResponse } from '../../../types/traffic'
 import { getIntersectionPage } from '../intersectionApi'
-import { formatDetectorUpdate } from '../intersectionFormatting'
-
-const intersectionColumns: ColumnDef<IntersectionSummary>[] = [
-  {
-    accessorKey: 'name',
-    header: 'Intersection',
-    cell: ({ row }) => (
-      <div className="intersection-name-cell">
-        <Link to={`/intersections/${row.original.id}`}>{row.original.name}</Link>
-        <span>INT-{row.original.id}</span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'status',
-    header: 'Health',
-    cell: ({ row }) => (
-      <span className={`status status-${row.original.status.toLowerCase()}`}>
-        {row.original.status}
-      </span>
-    ),
-  },
-  {
-    accessorKey: 'speedMph',
-    header: 'Speed',
-    cell: ({ getValue }) => {
-      const speed = getValue<number | null>()
-      return speed === null ? <span className="muted-value">Unavailable</span> : `${speed} mph`
-    },
-  },
-  {
-    accessorKey: 'activeEventCount',
-    header: 'Active events',
-  },
-  {
-    accessorKey: 'lastUpdate',
-    header: 'Last update',
-    cell: ({ row }) => formatDetectorUpdate(row.original.lastDetectorUpdate),
-  },
-  {
-    accessorKey: 'freshness',
-    header: 'Freshness',
-    cell: ({ row }) => (
-      <span className={`freshness-badge freshness-${row.original.freshness.toLowerCase()}`}>
-        {row.original.freshness}
-      </span>
-    ),
-  },
-]
+import { IntersectionDirectoryTable } from '../components/IntersectionDirectoryTable'
+import { IntersectionFilters } from '../components/IntersectionFilters'
 
 const freshnessStates = ['Fresh', 'Delayed', 'Stale'] as const
-const emptyIntersections: IntersectionSummary[] = []
 const searchDebounceMilliseconds = 300
 
 export function IntersectionsPage() {
@@ -121,23 +66,6 @@ export function IntersectionsPage() {
     return () => controller.abort()
   }, [debouncedSearch, freshness, health, normalizedSearch, pagination.pageIndex, pagination.pageSize, retryCount])
 
-  const table = useReactTable({
-    data: result?.items ?? emptyIntersections,
-    columns: intersectionColumns,
-    getRowId: (row) => String(row.id),
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    pageCount: result ? Math.ceil(result.totalCount / pagination.pageSize) : 0,
-    onPaginationChange: setPagination,
-    state: { pagination },
-  })
-
-  const filteredCount = result?.totalCount ?? 0
-  const pageIndex = table.getState().pagination.pageIndex
-  const pageSize = table.getState().pagination.pageSize
-  const firstVisible = filteredCount === 0 ? 0 : pageIndex * pageSize + 1
-  const lastVisible = Math.min(pageIndex * pageSize + table.getRowModel().rows.length, filteredCount)
-
   function clearFilters(): void {
     setSearch('')
     setHealth('All')
@@ -170,127 +98,33 @@ export function IntersectionsPage() {
         </article>
       </div>
 
-      <section className="intersection-toolbar" aria-label="Filter intersections">
-        <label className="intersection-search">
-          <span className="sr-only">Search intersection name</span>
-          <input
-            type="search"
-            value={search}
-            placeholder="Search intersection name"
-            onChange={(event) => setSearch(event.target.value)}
-          />
-        </label>
-        <label className="intersection-filter">
-          <span className="sr-only">Filter by health</span>
-          <select value={health} onChange={(event) => {
-            setHealth(event.target.value)
-            setPagination((current) => ({ ...current, pageIndex: 0 }))
-          }}>
-            <option value="All">All health statuses</option>
-            <option value="Healthy">Healthy</option>
-            <option value="Degraded">Degraded</option>
-            <option value="Offline">Offline</option>
-          </select>
-        </label>
-        <label className="intersection-filter">
-          <span className="sr-only">Filter by detector freshness</span>
-          <select value={freshness} onChange={(event) => {
-            setFreshness(event.target.value)
-            setPagination((current) => ({ ...current, pageIndex: 0 }))
-          }}>
-            <option value="All">All freshness states</option>
-            {freshnessStates.map((state) => <option key={state} value={state}>{state}</option>)}
-          </select>
-        </label>
-          {(search || health !== 'All' || freshness !== 'All') && (
-          <button className="clear-filters" type="button" onClick={clearFilters}>Clear filters</button>
-        )}
-      </section>
+      <IntersectionFilters
+        search={search}
+        health={health}
+        freshness={freshness}
+        freshnessStates={freshnessStates}
+        onSearchChange={setSearch}
+        onHealthChange={(value) => {
+          setHealth(value)
+          setPagination((current) => ({ ...current, pageIndex: 0 }))
+        }}
+        onFreshnessChange={(value) => {
+          setFreshness(value)
+          setPagination((current) => ({ ...current, pageIndex: 0 }))
+        }}
+        onClear={clearFilters}
+      />
 
-      <section className="intersection-table-panel" aria-labelledby="intersection-directory-title">
-        <div className="intersection-table-heading">
-          <div>
-            <span className="eyebrow">Intersection directory</span>
-            <h2 id="intersection-directory-title">{filteredCount} intersections</h2>
-          </div>
-          <span className="result-range">
-            Showing {firstVisible}-{lastVisible} of {filteredCount}
-          </span>
-        </div>
-
-        {loading ? (
-          <div className="intersection-state" role="status">Loading intersections...</div>
-        ) : error ? (
-          <div className="intersection-error-state" role="alert">
-            <div>
-              <h3>Unable to load intersections</h3>
-              <p>{error.message}</p>
-              {error.traceId && <p className="trace-id">Trace ID: {error.traceId}</p>}
-            </div>
-            <button className="secondary-action" type="button" onClick={() => setRetryCount((count) => count + 1)}>
-              Retry
-            </button>
-          </div>
-        ) : result?.totalCount === 0 ? (
-          <div className="intersection-empty-state">
-            {normalizedSearch || health !== 'All' || freshness !== 'All' ? (
-              <>
-                <h3>No intersections match these filters</h3>
-                <p>Adjust your search or clear the filters to see the full list.</p>
-                <button className="secondary-action" type="button" onClick={clearFilters}>Clear filters</button>
-              </>
-            ) : (
-              <>
-                <h3>No intersections configured</h3>
-                <p>There are no intersections available to monitor.</p>
-              </>
-            )}
-          </div>
-        ) : (
-          <div className="intersection-table-scroll">
-            <table className="intersection-table">
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th key={header.id} scope="col">
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        <div className="intersection-pagination">
-          <label>
-            <span>Rows per page</span>
-            <select value={pageSize} onChange={(event) => table.setPageSize(Number(event.target.value))}>
-              {[5, 10, 20].map((size) => <option key={size} value={size}>{size}</option>)}
-            </select>
-          </label>
-          <span className="page-count">Page {pageIndex + 1} of {Math.max(table.getPageCount(), 1)}</span>
-          <div className="page-controls">
-            <button type="button" aria-label="Previous page" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-              <span aria-hidden="true">‹</span>
-            </button>
-            <button type="button" aria-label="Next page" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-              <span aria-hidden="true">›</span>
-            </button>
-          </div>
-        </div>
-      </section>
+      <IntersectionDirectoryTable
+        result={result}
+        loading={loading}
+        error={error}
+        pagination={pagination}
+        hasActiveFilters={Boolean(normalizedSearch) || health !== 'All' || freshness !== 'All'}
+        onPaginationChange={setPagination}
+        onRetry={() => setRetryCount((count) => count + 1)}
+        onClearFilters={clearFilters}
+      />
     </main>
   )
 }

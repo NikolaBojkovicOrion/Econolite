@@ -13,6 +13,7 @@ public sealed class IntersectionDomainTests
             33.8021,
             -117.9143,
             "Healthy",
+            null,
             DateTimeOffset.Parse("2026-09-29T09:58:00-07:00"));
 
         Assert.Equal(101, intersection.Id);

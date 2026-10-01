@@ -27,4 +27,26 @@ public sealed class TrafficEvent
     public string SourceSystem { get; private set; } = string.Empty;
     public string ExternalEventId { get; private set; } = string.Empty;
     public Econolite_API.Modules.Intersections.Domain.Entities.Intersection Intersection { get; private set; } = null!;
+
+    public bool Acknowledge()
+    {
+        if (Status != "Active")
+        {
+            return false;
+        }
+
+        Status = "Acknowledged";
+        return true;
+    }
+
+    public bool Resolve()
+    {
+        if (Status is not ("Active" or "Acknowledged"))
+        {
+            return false;
+        }
+
+        Status = "Resolved";
+        return true;
+    }
 }

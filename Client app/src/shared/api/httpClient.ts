@@ -29,6 +29,17 @@ export async function postJson<TRequest, TResponse>(path: string, body: TRequest
   return response.json() as Promise<TResponse>
 }
 
+export async function patchJson<TResponse>(path: string): Promise<TResponse> {
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    method: 'PATCH',
+    headers: getAuthHeaders(),
+  })
+
+  await throwForProblemResponse(response)
+
+  return response.json() as Promise<TResponse>
+}
+
 function getAuthHeaders(): HeadersInit {
   const token = getAccessToken()
   return token ? { Authorization: `Bearer ${token}` } : {}

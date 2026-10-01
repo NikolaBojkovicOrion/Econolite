@@ -16,6 +16,8 @@ using Econolite_API.Modules.Intersections.Application.Interfaces;
 using Econolite_API.Modules.Identity.Application;
 using Econolite_API.Modules.TrafficEvents.Application;
 using Econolite_API.Modules.TrafficEvents.Application.Interfaces;
+using Econolite_API.Modules.Audit.Application;
+using Econolite_API.Modules.Audit.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +47,7 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IIntersectionService, IntersectionService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<ITrafficEventService, TrafficEventService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddSingleton<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
 
 var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();

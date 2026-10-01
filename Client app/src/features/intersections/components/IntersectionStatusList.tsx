@@ -10,8 +10,15 @@ export function IntersectionStatusList({ intersections }: IntersectionStatusList
       {intersections.map((intersection) => (
         <li key={intersection.id}>
           <span>{intersection.name}</span>
-          <span className={`status status-${intersection.status.toLowerCase()}`}>
-            {intersection.status}
+          <span className="intersection-status-group">
+            <span className={`status status-${intersection.status.toLowerCase()}`}>
+              {intersection.status}
+            </span>
+            {intersection.freshness && (
+              <small className={`freshness freshness-${intersection.freshness.toLowerCase()}`}>
+                Data {intersection.freshness.toLowerCase()}
+              </small>
+            )}
           </span>
         </li>
       ))}

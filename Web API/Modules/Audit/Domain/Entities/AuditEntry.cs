@@ -6,6 +6,16 @@ public sealed class AuditEntry
     {
     }
 
+    public AuditEntry(Guid id, Guid? userId, string action, string entityType, string entityId, DateTimeOffset createdAt)
+    {
+        Id = id;
+        UserId = userId;
+        Action = action;
+        EntityType = entityType;
+        EntityId = entityId;
+        CreatedAt = createdAt;
+    }
+
     public Guid Id { get; private set; }
     public Guid? UserId { get; private set; }
     public string Action { get; private set; } = string.Empty;

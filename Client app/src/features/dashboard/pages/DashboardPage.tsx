@@ -1,4 +1,5 @@
 import { ActiveEventList } from '../../trafficEvents/components/ActiveEventList'
+import { SimulatedDetectorForm } from '../../trafficEvents/components/SimulatedDetectorForm'
 import { IntersectionStatusList } from '../../intersections/components/IntersectionStatusList'
 import { MetricCard } from '../components/MetricCard'
 import { useDashboardData } from '../useDashboardData'
@@ -56,6 +57,12 @@ export function DashboardPage() {
           <article className="feature-panel">
             <strong>Active conditions</strong>
             <h2>Events needing review</h2>
+            {import.meta.env.DEV && (
+              <SimulatedDetectorForm
+                intersections={dashboard.intersections}
+                onCreated={retry}
+              />
+            )}
             <ActiveEventList events={dashboard.events} />
           </article>
         </div>

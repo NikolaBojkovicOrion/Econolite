@@ -13,8 +13,16 @@ export function ActiveEventList({ events }: ActiveEventListProps) {
     <ul className="data-list">
       {events.map((event) => (
         <li key={event.id}>
-          <span>{event.type} at #{event.intersectionId}</span>
-          <span className="status status-degraded">{event.severity}</span>
+          <span className="event-summary">
+            <span>{event.type} at #{event.intersectionId}</span>
+            <time dateTime={event.detectedAt}>
+              Detected {new Date(event.detectedAt).toLocaleString()}
+            </time>
+          </span>
+          <span className="event-summary-badges">
+            <span className={`status status-${event.severity.toLowerCase()}`}>{event.severity}</span>
+            <span className={`status status-${event.status.toLowerCase()}`}>{event.status}</span>
+          </span>
         </li>
       ))}
     </ul>

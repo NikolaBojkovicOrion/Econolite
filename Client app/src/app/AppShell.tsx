@@ -5,7 +5,8 @@ import { RequireAuth } from '../features/auth/components/RequireAuth'
 import { LoginPage } from '../features/auth/pages/LoginPage'
 import { IntersectionsPage } from '../features/intersections/pages/IntersectionsPage'
 import { IntersectionDetailPage } from '../features/intersections/pages/IntersectionDetailPage'
-import { FeaturePage } from '../shared/components/FeaturePage'
+import { TrafficEventsPage } from '../features/trafficEvents/pages/TrafficEventsPage'
+import { AuditPage } from '../features/audit/pages/AuditPage'
 
 export function AppShell() {
   return (
@@ -19,11 +20,11 @@ export function AppShell() {
           <Route path="/intersections/:id" element={<IntersectionDetailPage />} />
           <Route
             path="/events"
-            element={<FeaturePage title="Traffic events" description="Review congestion, detector signals, and incidents that need attention." />}
+            element={<TrafficEventsPage />}
           />
           <Route
             path="/audit"
-            element={<FeaturePage title="Audit history" description="Trace important operator and system actions through an accountable record." />}
+            element={<AuditPage />}
           />
         </Route>
         <Route

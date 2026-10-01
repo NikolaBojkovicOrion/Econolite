@@ -9,6 +9,7 @@ export interface Intersection {
   longitude: number
   status: IntersectionStatus | string
   lastDetectorUpdate: string | null
+  freshness?: DetectorFreshness
 }
 
 export type DetectorFreshness = 'Fresh' | 'Delayed' | 'Stale'

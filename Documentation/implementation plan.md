@@ -816,8 +816,6 @@ The following features have been implemented in the current workspace.
 
 ### Remaining Features
 
-- **Feature 5:** Intersection Monitoring Dashboard enhancements
-- **Feature 6:** Traffic Event and Simulated Detector Workflow
 - **Feature 7:** Acknowledge, Resolve, and Audit
 - **Feature 8:** Real-Time Updates with SignalR
 - **Feature 9:** Deployment and Production Readiness

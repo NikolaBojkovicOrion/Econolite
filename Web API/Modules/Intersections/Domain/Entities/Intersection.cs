@@ -25,4 +25,12 @@ public sealed class Intersection
     public int? SpeedMph { get; private set; }
     public DateTimeOffset? LastDetectorUpdate { get; private set; }
     public ICollection<Econolite_API.Modules.TrafficEvents.Domain.Entities.TrafficEvent> TrafficEvents { get; private set; } = new List<Econolite_API.Modules.TrafficEvents.Domain.Entities.TrafficEvent>();
+
+    public void RecordDetectorUpdate(DateTimeOffset detectedAt)
+    {
+        if (LastDetectorUpdate is null || detectedAt > LastDetectorUpdate)
+        {
+            LastDetectorUpdate = detectedAt;
+        }
+    }
 }

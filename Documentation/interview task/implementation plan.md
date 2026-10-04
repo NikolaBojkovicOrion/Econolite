@@ -838,3 +838,17 @@ The following features have been implemented in the current workspace.
 - **Feature 9:** Deployment and Production Readiness
 
 Feature 7 and Feature 8 received frontend typecheck/build and backend compile checks. Unit tests, integration tests, and smoke testing were not run for these features by request.
+
+## 12. Using the Implementation Status Tracker
+
+Use [implementation-status.md](implementation-status.md) as the current progress and verification record. This plan remains the source for intended scope, domain rules, and acceptance criteria; the tracker records what is implemented, what has actually been verified, and what remains. The feature summaries above provide implementation context and should not be treated as a substitute for fresh validation evidence.
+
+For each feature or bounded work item:
+
+1. Before starting, set its status to `In progress`, identify the next deliverable, and capture any material blocker or unresolved domain decision.
+2. Use Agent mode's task checklist for live, step-by-step work. Keep it small and mark a step complete only when its result has been inspected or validated.
+3. After a meaningful milestone, update the durable tracker with the implementation result and the next step. Before pausing or handing off, record the current state and the exact next action.
+4. After running validation, record the command or test scope, date, and pass/fail result. Do not mark work `Verified` based only on generated code, compilation when tests are required, or an old result after relevant code changed.
+5. Mark a feature `Verified` when its agreed acceptance criteria and required checks have passed. Record remaining limitations separately; verification does not imply production readiness.
+
+Keep the tracker concise: update existing feature rows rather than creating one progress file per agent session or copying the full requirements into multiple documents. The developer owns status accuracy and reviews Copilot's edits and test claims.

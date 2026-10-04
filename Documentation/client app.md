@@ -562,3 +562,59 @@ src/
 The app shell would own routing and providers. Each feature would own its API functions, hooks, components, and tests. Shared components would contain genuinely reusable UI such as loading and error states, not business-specific traffic rules.
 
 I would extract incrementally: first separate page-level components, then move API and state logic into hooks or feature modules, and finally add tests around each workflow. This reduces risk and avoids a large rewrite.
+
+### What happens when React state changes, and what is reconciliation?
+
+When state or props change, React calls the affected component functions to produce a new description of the UI. React compares that result with the previous render and commits the necessary DOM changes. Rendering is not the same thing as recreating the whole page; React reconciles the component tree and updates what changed.
+
+Keys help React identify list items across renders. I use stable domain IDs for keys when a list can be inserted into, removed from, or reordered. An array index is only appropriate for a truly static list, because index keys can associate component state with the wrong item after reordering.
+
+### Why can a state update appear not to take effect immediately?
+
+State setters schedule an update; they do not change the state variable inside the currently executing render. React can batch updates, so code after a setter still sees the value from that render. When the next value depends on the previous value, I use a functional update such as `setCount(current => current + 1)`. This avoids stale closure bugs when updates are queued or repeated.
+
+I avoid copying props into state unless I have a clear synchronization requirement. Derived values should usually be calculated during render, because storing a second copy creates two values that can drift apart.
+
+### When do you use an effect, and how do you prevent effect bugs?
+
+I use `useEffect` to synchronize with an external system after React commits, such as a subscription, timer, browser API, or SignalR connection. I do not use it for calculations that can happen during render or for work that belongs directly in a user event handler.
+
+The dependency list must represent the reactive values used by the effect. When an effect creates a subscription or connection, its cleanup removes listeners and releases the resource. React Strict Mode may run an extra setup-and-cleanup cycle in development to expose effects that are not resilient; I make the effect safe to repeat instead of relying on it running exactly once. In this project, the SignalR hook owns connection setup, handlers, reconnect callbacks, and cleanup.
+
+### What is the difference between `useTransition` and `useDeferredValue`?
+
+Both let the UI keep urgent interactions responsive while less urgent rendering work is pending, but they express different intent. `useTransition` lets me mark a state update as non-urgent and expose whether that transition is pending. `useDeferredValue` lets a value used by an expensive part of the UI lag behind the newest value while React renders the newer result in the background.
+
+For example, typing into a search box should update the input immediately, while a large table can render from a deferred query value. Neither API is a network debounce, cancellation strategy, or guarantee that work runs on another thread. I use them when rendering is measurably expensive, not as a default around every input.
+
+### What are React 19 Actions and form-related hooks?
+
+React 19 supports Actions for managing asynchronous mutations in transitions and forms. `useActionState` connects an action to state and a pending flag; `useFormStatus` lets a component inside a form read its submission status; and `useOptimistic` can render a temporary optimistic value while an action is pending.
+
+I would use these when they simplify the actual form or mutation flow. An optimistic update still needs a clear failure and rollback story. For an operator action that must be auditable, I would generally wait for the API to confirm success unless the product explicitly calls for optimistic feedback and the UI can correctly recover from rejection. These React APIs do not replace server validation, authorization, or persistence.
+
+### How do Suspense and error boundaries differ?
+
+Suspense displays a fallback while a descendant is waiting on a Suspense-enabled operation, commonly lazy-loaded code or data managed through a compatible framework. It does not automatically catch a fetch started inside an ordinary `useEffect`; in that pattern, the component still needs explicit loading and error state.
+
+An error boundary catches rendering errors in its child tree and can show a fallback instead of taking down the entire application. It does not generally catch errors thrown later by event handlers or arbitrary asynchronous callbacks, so expected API failures still need to be handled in the request workflow. I place boundaries around meaningful parts of the UI and keep request errors actionable.
+
+### How do you decide whether to use `memo`, `useMemo`, or `useCallback`?
+
+I measure first with the React Profiler and identify the expensive render or unstable prop that causes it. `memo` can skip rendering a component when its props are unchanged; `useMemo` can cache a calculation; and `useCallback` can preserve a function reference. They add complexity and shallow comparisons, so they are not automatically performance wins.
+
+The React Compiler can perform some memoization automatically when a project enables and supports it. I would follow the project's compiler configuration and verify its behavior instead of adding manual memoization preemptively. This client does not need to claim compiler use to benefit from sensible component boundaries and server-side pagination.
+
+### What are Server Components, and does this Vite client use them?
+
+Server Components render on the server and can access server-side resources without shipping that component's implementation to the browser. They cannot use client-only state, effects, or event handlers. Interactive Client Components are used for those behaviors, with framework-specific boundaries between server and client code.
+
+This project is a Vite client-side React application backed by an ASP.NET Core API; it does not use React Server Components. I would adopt them only through a framework and deployment architecture that supports them, not treat them as a switch that can be added to any existing SPA. Regardless of rendering model, authorization and sensitive data access must remain on trusted server-side code.
+
+### What is the difference between `useRef` and state?
+
+State is for values that affect rendered output: updating it schedules a render. A ref stores a mutable value across renders without scheduling one. I use refs for values such as a DOM element, timer ID, or external connection handle when changing that value should not itself update the UI. If a user-visible value changes, it belongs in state rather than only in a ref.
+
+### How would you handle a component that subscribes to an external store?
+
+For a custom external store, `useSyncExternalStore` provides React with a subscription function and a snapshot reader. React can then observe store changes consistently, including with concurrent rendering. I would prefer the store's official React integration when one exists and avoid hand-rolling subscriptions in many components. For this project's authentication, React context is sufficient; for API-owned intersections and events, a server-state library may be more appropriate if caching and invalidation needs grow.

@@ -27,7 +27,7 @@ public static class DevelopmentUserSeeder
             Guid.Parse("5cf6ccf6-71bf-4e74-a1cf-5ec7c2f9e302"),
             "nikola@econolite.local",
             string.Empty,
-            "Operator");
+            "Admin");
         var hasherNikola = services.GetRequiredService<IPasswordHasher<ApplicationUser>>();
         userNikola.SetPasswordHash(hasherNikola.HashPassword(userNikola, "Operator123!"));
 
@@ -35,7 +35,7 @@ public static class DevelopmentUserSeeder
             Guid.Parse("5cf6ccf6-71bf-4e74-a1cf-5ec7c2f9e303"),
             "marko@econolite.local",
             string.Empty,
-            "Operator");
+            "Supervisor");
         var hasherMarko = services.GetRequiredService<IPasswordHasher<ApplicationUser>>();
         userMarko.SetPasswordHash(hasherMarko.HashPassword(userMarko, "Operator123!"));
 

@@ -64,7 +64,7 @@ public sealed class TrafficEventsController(
     }
 
     [HttpPatch("{id:guid}/resolve")]
-    [Authorize(Policy = AuthorizationPolicies.CanAcknowledgeTrafficEvent)]
+    [Authorize(Policy = AuthorizationPolicies.CanResolveCriticalEvent)]
     public async Task<IActionResult> Resolve(Guid id, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
